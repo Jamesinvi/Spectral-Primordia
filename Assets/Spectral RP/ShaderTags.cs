@@ -1,0 +1,11 @@
+﻿using UnityEngine.Rendering;
+
+namespace Spectral_RP
+{
+    public static class ShaderTags
+    {
+        public static readonly ShaderTagId UnlitShaderTag = new("Unlit");
+        public static readonly ShaderTagId LitShaderTag = new("Lit");
+        public static readonly ShaderTagId PassNameDefault = new("SRPDefaultUnlit"); //The shader pass tag for replacing shaders without pass
+    }
+}
