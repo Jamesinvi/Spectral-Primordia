@@ -27,15 +27,26 @@ float3 SampleSHSimple(float3 normWS)
     return SampleSH9(SHCoefficients, normWS);
 }
 
+
+float Fresnel(float3 normWS, float3 viewDir, float power)
+{
+    return pow((1.0 - saturate(dot(normalize(normWS), normalize(viewDir)))), power);
+}
+
+
 float3 GetSpecular(
     float3 normWS,
     float3 lightDirWS,
+    float3 lightColor,
     float smoothness,
-    float diff,
+    float specularPower,
     float3 viewDir)
 {
-    // Phong
-    float3 reflectDir = reflect(lightDirWS, normWS);
-    float specAngle = saturate(dot(reflectDir, viewDir));
-    return diff * pow(specAngle, (smoothness)) * 0.4;
+    // Blinn-Phong
+    float3 halfAngle = normalize(lightDirWS + viewDir);
+    float specAngle = saturate(dot(halfAngle, normWS));
+    float spec = pow(specAngle, smoothness);
+    float fresnel = Fresnel(normWS, viewDir, specularPower);
+    float reflectance=lerp(0.04, 1, fresnel);
+    return normalize(lightColor) * spec * reflectance;
 }
