@@ -9,8 +9,7 @@ Shader
         _Normal("Normal", 2D) = "bump" {}
         _NormalStrength("Normal Strength", Range(0,5)) = 1.0
         _Smoothness("Smoothness", Range(0,1)) = 0.5
-        _EmissionColor("Color", Color) = (1.0,1.0,1.0,1.0)
-        _EmissionStrength("Emission Multiplier", Range(0,1000)) = 1
+        [HDR]_EmissionColor("Color", Color) = (1.0,1.0,1.0,1.0)
     }
     SubShader
     {
@@ -35,7 +34,6 @@ Shader
                 float4 _EmissionColor;
                 float _NormalStrength;
                 float _Smoothness;
-                float _EmissionStrength;
                 sampler2D _MainTex;
                 sampler2D _Normal;
                 sampler2D _ToneTex;
@@ -128,8 +126,8 @@ Shader
                     int i = unity_LightIndices[1][id2 - 4];
                     albedo = LightContribution(IN.posWS, normWS, viewDir, i, smoothness, albedo);
                 }
-                ao*= ao*3;
-                return albedo * ao + (emission * _EmissionColor * _EmissionStrength);
+                ao*= ao;
+                return albedo * ao + (emission * _EmissionColor);
                 
             }
             ENDHLSL
