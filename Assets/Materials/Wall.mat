@@ -82,11 +82,11 @@ Material:
     - _GlossyReflections: 1
     - _Metallic: 0
     - _Mode: 0
-    - _NormalStrength: 1.08
+    - _NormalStrength: 0.82
     - _OcclusionStrength: 1
     - _Parallax: 0.02
     - _Roughness: 0.5
-    - _Smoothness: 0.795
+    - _Smoothness: 0.858
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1

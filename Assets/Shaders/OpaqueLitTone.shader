@@ -30,39 +30,39 @@ Shader
             #include "Lighting.hlsl"
 
             CBUFFER_START(UnityPerMaterial)
-                float4 _Color;
-                float4 _EmissionColor;
-                float _NormalStrength;
-                float _Smoothness;
+                real4 _Color;
+                real4 _EmissionColor;
+                real _NormalStrength;
+                real _Smoothness;
                 sampler2D _MainTex;
                 sampler2D _Normal;
                 sampler2D _ToneTex;
-                float4 _MainTex_ST;
+                real4 _MainTex_ST;
             CBUFFER_END
 
             #define MAXLIGHTCOUNT 16
 
             CBUFFER_START(Lights)
-                float4 _LightColors[MAXLIGHTCOUNT];
-                float4 _LightData[MAXLIGHTCOUNT];
-                float4 _LightSpotDirs[MAXLIGHTCOUNT];
+                real4 _LightColors[MAXLIGHTCOUNT];
+                real4 _LightData[MAXLIGHTCOUNT];
+                real4 _LightSpotDirs[MAXLIGHTCOUNT];
             CBUFFER_END
 
             struct Attributes
             {
-                float4 posOS : POSITION;
-                float2 uv : TEXCOORD0;
-                float3 normOS : NORMAL;
-                float4 tanOS : TANGENT;
+                real4 posOS : POSITION;
+                real2 uv : TEXCOORD0;
+                real3 normOS : NORMAL;
+                real4 tanOS : TANGENT;
             };
 
             struct Varyings
             {
-                float4 posCS : SV_POSITION;
-                float2 uv : TEXCOORD0;
-                float3 normWS : NORMAL;
-                float4 tanWS : TEXCOORD1;
-                float3 posWS : TEXCOORD2;
+                real4 posCS : SV_POSITION;
+                real2 uv : TEXCOORD0;
+                real3 normWS : NORMAL;
+                real4 tanWS : TEXCOORD1;
+                real3 posWS : TEXCOORD2;
             };
 
             Varyings vert(Attributes IN)
@@ -79,56 +79,64 @@ Shader
             }
 
 
-            float4 LightContribution(float3 posWS, float3 normWS, float3 viewDir, int i, float smoothness, inout float4 albedo)
-            {
-                float adjSmoothness = exp2(((smoothness) * 10) + 1);
-                if (_LightColors[i].w == -1)
-                {
-                    float NdotL;
-                    albedo.xyz += DiffuseDirectionalLight(albedo.rgb, _LightColors[i].rgb, _LightData[i].xyz, normWS, NdotL);
-                    albedo.xyz += GetSpecular(normWS, _LightData[i].xyz, _LightColors[i].xyz, adjSmoothness, 1, viewDir) * NdotL;
-                }
-                if (_LightColors[i].w == -2)
-                {
-                    float NdotL;
-                    albedo.xyz += DiffusePointLight(normWS, albedo.rgb, posWS, _LightData[i].xyz, _LightData[i].w, _LightColors[i].rgb, NdotL);
-                    albedo.xyz += GetSpecular(normWS, _LightData[i].xyz, _LightColors[i].xyz, adjSmoothness, 1, viewDir) * NdotL;
-                }
-                return albedo;
-            }
-
-            float4 frag(Varyings IN) : SV_TARGET
+            real4 frag(Varyings IN) : SV_TARGET
             {
                 // Normalize the interpolated vectors
-                float3 normWS = normalize(IN.normWS);
-                float3 tanWS = normalize(IN.tanWS.xyz);
-                float3 viewDir = normalize(_WorldSpaceCameraPos.xyz- IN.posWS.xyz);
+                real3 normWS = normalize(IN.normWS);
+                real3 tanWS = normalize(IN.tanWS.xyz);
+                real3 viewDir = normalize(_WorldSpaceCameraPos.xyz - IN.posWS.xyz);
 
-                float3 ambient = SampleSHSimple(normWS);
-                float4 albedo = tex2D(_MainTex, IN.uv) * _Color;
-                float4 tone = tex2D(_ToneTex, IN.uv);
-                float4 smoothness = tone.g * _Smoothness;
-                float4 ao = tone.r * _Smoothness;
-                float4 emission = tone.b * _Smoothness;
+                real3 ambient = SampleSHSimple(normWS);
+                real4 albedo = tex2D(_MainTex, IN.uv) * _Color;
+                real4 tone = tex2D(_ToneTex, IN.uv);
+                real4 smoothness = tone.g * _Smoothness;
+                real4 ao = tone.r * _Smoothness;
+                real4 emission = tone.b * _Smoothness;
                 albedo.xyz *= ambient.xyz;
                 // Sample and unpack the normal map (gives a tangent-space normal)
-                float3 normTS = UnpackNormalScale(tex2D(_Normal, IN.uv), _NormalStrength);
-                float3x3 TBN = CreateTangentToWorld(normWS, tanWS, IN.tanWS.w); // Tangent-bitangent-normal
+                real3 normTS = UnpackNormalScale(tex2D(_Normal, IN.uv), _NormalStrength);
+                real3x3 TBN = CreateTangentToWorld(normWS, tanWS, IN.tanWS.w); // Tangent-bitangent-normal
                 normWS = TransformTangentToWorld(normTS, TBN, true);
+
+
+                real3 reflection = reflect(-viewDir, IN.normWS); // Direction of ray after hitting the surface of object
+                float lod = Remap(0, 1, 8, 0, smoothness);
+                real3 reflectionCol = PLATFORM_SAMPLE_TEXTURECUBE_LOD(unity_SpecCube0, samplerunity_SpecCube0, reflection, lod);
+
+
                 for (int id = 0; id < min(unity_LightData.y, 4); id++)
                 {
                     int i = unity_LightIndices[0][id];
-                    albedo = LightContribution(IN.posWS, normWS, viewDir, i, smoothness,albedo);
+                    ShadingInfo info;
+                    info.posWS = IN.posWS;
+                    info.normWS = normWS;
+                    info.viewDir = viewDir;
+                    info.albedo = albedo;
+                    info.smoothness = smoothness;
+                    info.lightType = _LightColors[i].w;
+                    info.lightData = _LightData[i];
+                    info.lightCol = _LightColors[i];
+                    info.reflectionCol = reflectionCol;
+                    albedo += LightContribution(info);
                 }
 
                 for (int id2 = 4; id2 < min(unity_LightData.y, 8); id2++)
                 {
                     int i = unity_LightIndices[1][id2 - 4];
-                    albedo = LightContribution(IN.posWS, normWS, viewDir, i, smoothness, albedo);
+                    ShadingInfo info;
+                    info.posWS = IN.posWS;
+                    info.normWS = normWS;
+                    info.viewDir = viewDir;
+                    info.albedo = albedo;
+                    info.smoothness = smoothness;
+                    info.lightType = _LightColors[i].w;
+                    info.lightData = _LightData[i];
+                    info.lightCol = _LightColors[i];
+                    info.reflectionCol = reflectionCol;
+                    albedo += LightContribution(info);
                 }
-                ao*= ao;
+                ao *= ao;
                 return albedo * ao + (emission * _EmissionColor);
-                
             }
             ENDHLSL
         }
