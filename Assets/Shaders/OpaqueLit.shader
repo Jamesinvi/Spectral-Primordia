@@ -9,10 +9,12 @@ Shader
         _Normal("Normal", 2D) = "bump" {}
         _NormalStrength("Normal Strength", Range(0,5)) = 1.0
         _Smoothness("Smoothness", Range(0,1)) = 0.5
+        // When the toggle is disabled, Unity disables a shader keyword with the name "ENABLE_EXAMPLE_FEATURE".
+        [Toggle(NORMAL_ON)] _NormalMapEnabled ("Use normal map", Float) = 0
+
     }
     SubShader
     {
-
         Pass
         {
             // The value of the LightMode Pass tag must match the ShaderTagId in ScriptableRenderContext.DrawRenderers
@@ -27,7 +29,7 @@ Shader
             #include "SpectralCore.hlsl"
             #include "SpectralTransforms.hlsl"
             #include "Lighting.hlsl"
-
+            #pragma multi_compile __ NORMAL_ON
 
             CBUFFER_START(UnityPerMaterial)
                 real4 _Color;
@@ -88,8 +90,12 @@ Shader
                 real4 albedo = tex2D(_MainTex, IN.uv) * _Color;
                 real4 smoothness = tex2D(_SmoothnessTex, IN.uv) * _Smoothness;
                 albedo.xyz *= ambient.xyz;
+                #if NORMAL_ON
                 // Sample and unpack the normal map (gives a tangent-space normal)
                 real3 normTS = UnpackNormalScale(tex2D(_Normal, IN.uv), _NormalStrength);
+                #else
+                real3 normTS = float3(0.0, 0.0, 1.0);
+                #endif
                 real3x3 TBN = CreateTangentToWorld(normWS, tanWS, IN.tanWS.w); // Tangent-bitangent-normal
                 normWS = TransformTangentToWorld(normTS, TBN, true);
 
@@ -134,5 +140,6 @@ Shader
             }
             ENDHLSL
         }
+
     }
 }
