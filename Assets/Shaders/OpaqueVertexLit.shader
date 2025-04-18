@@ -116,5 +116,21 @@ Shader
             }
             ENDHLSL
         }
+
+        Pass
+        {
+            Tags
+            {
+                "LightMode" = "DepthOnly"
+            }
+            ZWrite On
+            ColorMask R
+            HLSLPROGRAM
+            #include "SpectralDepth.hlsl"
+            #pragma vertex DepthOnlyVert
+            #pragma fragment DepthOnlyFrag
+
+            ENDHLSL
+        }
     }
 }

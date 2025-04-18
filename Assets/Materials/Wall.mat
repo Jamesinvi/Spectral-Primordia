@@ -85,11 +85,11 @@ Material:
     - _Metallic: 0
     - _Mode: 0
     - _NormalMapEnabled: 1
-    - _NormalStrength: 0.82
+    - _NormalStrength: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.02
     - _Roughness: 0.5
-    - _Smoothness: 0.858
+    - _Smoothness: 0
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1

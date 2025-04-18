@@ -7,7 +7,7 @@ Shader
         _MainTex("Main Texture", 2D) = "white"{}
         _ToneTex("Tone Map", 2D) = "white"{}
         _Normal("Normal", 2D) = "bump" {}
-        _NormalStrength("Normal Strength", Range(0,5)) = 1.0
+        _NormalStrength("Normal Strength", Range(0,2)) = 1.0
         _Smoothness("Smoothness", Range(0,1)) = 0.5
         [HDR]_EmissionColor("Color", Color) = (1.0,1.0,1.0,1.0)
         // When the toggle is disabled, Unity disables a shader keyword with the name "ENABLE_EXAMPLE_FEATURE".
@@ -93,7 +93,7 @@ Shader
                 real4 albedo = tex2D(_MainTex, IN.uv) * _Color;
                 real4 tone = tex2D(_ToneTex, IN.uv);
                 real4 smoothness = tone.g * _Smoothness;
-                real4 ao = tone.r * _Smoothness;
+                real4 ao = tone.r;
                 real4 emission = tone.b * _Smoothness;
                 albedo.xyz *= ambient.xyz;
                 #if NORMAL_ON
@@ -142,9 +142,24 @@ Shader
                     info.reflectionCol = reflectionCol;
                     albedo += LightContribution(info);
                 }
-                ao *= ao;
                 return albedo * ao + (emission * _EmissionColor);
             }
+            ENDHLSL
+        }
+
+        Pass
+        {
+            Tags
+            {
+                "LightMode" = "DepthOnly"
+            }
+            ZWrite On
+            ColorMask R
+            HLSLPROGRAM
+            #include "SpectralDepth.hlsl"
+            #pragma vertex DepthOnlyVert
+            #pragma fragment DepthOnlyFrag
+
             ENDHLSL
         }
     }

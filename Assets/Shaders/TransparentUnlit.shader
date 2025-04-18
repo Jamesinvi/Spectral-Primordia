@@ -5,10 +5,11 @@ Shader"Spectral/TransparentUnlit"
     {
         _Color("Color", Color) = (1.0,1.0,1.0,1.0)
         _MainTex("Texture", 2D) = "white"{}
+        [KeywordEnum(Off, Front, Back)] _Cull("Culling Mode", Float)= 0
+        [Toggle(ENABLE_Z_WRITE)] _ZWrite("Write to Depth", Float)= 0
     }
     SubShader
     {
-      
         // The value of the LightMode Pass tag must match the ShaderTagId in ScriptableRenderContext.DrawRenderers
 		Tags { "Queue"="Transparent" "IgnoreProjector"="True" "RenderType"="Transparent" }
 		Cull Off Lighting Off ZWrite Off
@@ -17,6 +18,8 @@ Shader"Spectral/TransparentUnlit"
         Pass
         {
             Tags { "LightMode" = "Unlit" }
+            ZWrite [_ZWrite]
+            Cull [_Cull]
             HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag
@@ -33,7 +36,7 @@ Shader"Spectral/TransparentUnlit"
             struct Attributes
             {
                 float4 posOS   : POSITION;
-                float2 uv           : TEXCOORD0;
+                float2 uv      : TEXCOORD0;
             };
 
             struct Varyings

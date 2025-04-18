@@ -12,4 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6aabb2432ac2dd4a9ae627e0d251d52, type: 3}
   m_Name: Pipeline Asset
   m_EditorClassIdentifier: 
-  backgroundColor: {r: 0.2688679, g: 0.6558545, b: 1, a: 1}
+  depthBufferBits: 24
+  shadowResolution: 1

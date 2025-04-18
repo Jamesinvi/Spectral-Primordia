@@ -74,6 +74,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _AOStrength: 5
     - _BumpScale: 1
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
@@ -89,7 +90,7 @@ Material:
     - _NormalStrength: 1
     - _OcclusionStrength: 1
     - _Parallax: 0.02
-    - _Smoothness: 0.765
+    - _Smoothness: 0.7
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1

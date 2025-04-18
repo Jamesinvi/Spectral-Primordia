@@ -1,4 +1,5 @@
-﻿real3 DiffuseDirectionalLight(real3 albedo, real3 lightCol, real3 lightDirWS, real3 surfNormWS, out real NdotL)
+﻿#include "SpectralCore.hlsl"
+real3 DiffuseDirectionalLight(real3 albedo, real3 lightCol, real3 lightDirWS, real3 surfNormWS, out real NdotL)
 {
     NdotL = max(dot(surfNormWS, lightDirWS), 0.0);
     return albedo * lightCol * NdotL;
@@ -7,10 +8,10 @@
 real3 DiffusePointLight(real3 normWs, real3 albedo, real3 fragPosWS, real3 lightPosWS, real range, real3 color, out real NdotL)
 {
     real3 lightVec = lightPosWS - fragPosWS;
-    real d = length(lightVec);
-    lightVec = normalize(lightVec);
-    real attenuation = saturate(1.0 - (d * d) / (range * range)); // Smooth quadratic
     NdotL = max(dot(lightVec, normWs), 0);
+    real d = length(lightVec);
+    real h = smoothstep(1,0, (d*d)/(range*range));
+    float attenuation = saturate(h);
     return albedo * NdotL * color * attenuation;
 }
 
@@ -38,11 +39,21 @@ real3 GetSpecular(real3 normWS, real3 lightDirWS, real3 lightColor, real smoothn
 {
     // Blinn-Phong
     real3 halfAngle = normalize(lightDirWS + viewDir);
-    real specAngle = saturate(dot(halfAngle, normWS));
-    real spec = pow(specAngle, smoothness);
-    real fresnel = Fresnel(normWS, viewDir, specularPower);
-    real reflectance = lerp(0.04, 1, fresnel);
-    return normalize(lightColor) * spec * reflectance;
+    real specAngle = saturate(dot(normWS, halfAngle));
+    real n = lerp(1.0, 128.0, smoothness);
+
+    // Normalization so energy roughly sums to 1
+    real normalization = (n + 2.0) * (0.5 / PI);
+    real rawSpec = normalization * pow(specAngle, n);
+
+    // Scale by smoothness to drop amplitude on rough surfaces
+    rawSpec *= smoothness;
+
+    // Schlick‑style Fresnel
+    real fresnelVal = Fresnel(normWS, viewDir, specularPower);
+    real3 Fschlick = lerp(lightColor * 0.04, lightColor, fresnelVal);
+
+    return rawSpec * Fschlick;
 }
 
 
@@ -61,18 +72,18 @@ struct ShadingInfo
 
 real4 LightContribution(ShadingInfo surf)
 {
-    real adjSmoothness = exp2(((surf.smoothness) * 10) + 1);
+    real4 contribution = real4(0, 0, 0, 0);
     if (surf.lightType == -1)
     {
         real NdotL;
-        surf.albedo.xyz += DiffuseDirectionalLight(surf.albedo.rgb, surf.lightCol, surf.lightData, surf.normWS, NdotL);
-        surf.albedo.xyz += GetSpecular(surf.normWS, surf.lightData, surf.lightCol * surf.reflectionCol, adjSmoothness, 1, surf.viewDir) * NdotL;
+        contribution.xyz += DiffuseDirectionalLight(surf.albedo.rgb, surf.lightCol, surf.lightData, surf.normWS, NdotL);
+        contribution.xyz += GetSpecular(surf.normWS, surf.lightData, surf.lightCol * surf.reflectionCol, surf.smoothness, 1, surf.viewDir) * NdotL;
     }
     if (surf.lightType == -2)
     {
         real NdotL;
-        surf.albedo.xyz += DiffusePointLight(surf.normWS, surf.albedo.rgb, surf.posWS, surf.lightData, surf.lightData.w, surf.lightCol, NdotL);
-        surf.albedo.xyz += GetSpecular(surf.normWS, surf.lightData, surf.lightCol * surf.reflectionCol, adjSmoothness, 1, surf.viewDir) * NdotL;
+        contribution.xyz += DiffusePointLight(surf.normWS, surf.albedo.rgb, surf.posWS, surf.lightData, surf.lightData.w, surf.lightCol, NdotL);
+        contribution.xyz += GetSpecular(surf.normWS, surf.lightData, surf.lightCol * surf.reflectionCol, surf.smoothness, 1, surf.viewDir) * NdotL;
     }
-    return surf.albedo;
+    return contribution;
 }

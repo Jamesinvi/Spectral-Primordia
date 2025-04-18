@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Floor
-  m_Shader: {fileID: 4800000, guid: 753e6e6774df4a15b3697768b8f1d1b1, type: 3}
+  m_Name: Red Unlit
+  m_Shader: {fileID: 4800000, guid: 76c0364e1dcd1e44382a1380b9ae48fb, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -44,8 +44,8 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 10305, guid: 0000000000000000f000000000000000, type: 0}
-        m_Scale: {x: 12, y: 12}
+        m_Texture: {fileID: 10309, guid: 0000000000000000f000000000000000, type: 0}
+        m_Scale: {x: 5, y: 5}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
         m_Texture: {fileID: 0}
@@ -60,6 +60,10 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _ParallaxMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _RoughnessTex:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -79,17 +83,18 @@ Material:
     - _Metallic: 0
     - _Mode: 0
     - _NormalMapEnabled: 0
-    - _NormalStrength: 0
+    - _NormalStrength: 3.15
     - _OcclusionStrength: 1
     - _Parallax: 0.02
-    - _Smoothness: 0
+    - _Roughness: 0.5
+    - _Smoothness: 0.813
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _UVSec: 0
     - _ZWrite: 1
     m_Colors:
-    - _Color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
+    - _Color: {r: 1, g: 0.47641504, b: 0.47641504, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

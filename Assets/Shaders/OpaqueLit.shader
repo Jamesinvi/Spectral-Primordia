@@ -7,7 +7,7 @@ Shader
         _MainTex("Main Texture", 2D) = "white"{}
         _SmoothnessTex("Smoothness Map", 2D) = "white"{}
         _Normal("Normal", 2D) = "bump" {}
-        _NormalStrength("Normal Strength", Range(0,5)) = 1.0
+        _NormalStrength("Normal Strength", Range(0,1)) = 1.0
         _Smoothness("Smoothness", Range(0,1)) = 0.5
         // When the toggle is disabled, Unity disables a shader keyword with the name "ENABLE_EXAMPLE_FEATURE".
         [Toggle(NORMAL_ON)] _NormalMapEnabled ("Use normal map", Float) = 0
@@ -138,6 +138,21 @@ Shader
                 }
                 return albedo;
             }
+            ENDHLSL
+        }
+        Pass
+        {
+            Tags
+            {
+                "LightMode" = "DepthOnly"
+            }
+            ZWrite On
+            ColorMask R
+            HLSLPROGRAM
+            #include "SpectralDepth.hlsl"
+            #pragma vertex DepthOnlyVert
+            #pragma fragment DepthOnlyFrag
+
             ENDHLSL
         }
 
