@@ -1,24 +1,24 @@
 using System;
 using Spectral.Autonation.Components;
 using Spectral.Core;
+using UnityEngine;
 
 namespace Spectral.Autonation.Managers
 {
     public class EntityDatabase : Singleton<EntityDatabase>
     {
-        public DynamicArray<Entity> Entities;
-        public DynamicArray<MoverC> Movers;
-        public DynamicArray<RendererC> Renderers;
-        public DynamicArray<TransformC> Transforms;
+        public readonly DynamicArray<Entity> entities;
+        public readonly DynamicArray<MoverC> movers;
+        public readonly DynamicArray<RendererC> renderers;
+        public readonly DynamicArray<TransformC> transforms;
 
         public EntityDatabase(int capacity = 2000)
         {
-            Entities = new DynamicArray<Entity>(capacity);
-            Transforms = new DynamicArray<TransformC>(capacity);
-            Movers = new DynamicArray<MoverC>(capacity);
-            Renderers = new DynamicArray<RendererC>(capacity);
+            entities = new DynamicArray<Entity>(capacity);
+            transforms = new DynamicArray<TransformC>(capacity);
+            movers = new DynamicArray<MoverC>(capacity);
+            renderers = new DynamicArray<RendererC>(capacity);
         }
-
         public EntityDatabase() : this(2000)
         {
         }
@@ -26,30 +26,32 @@ namespace Spectral.Autonation.Managers
         public DynamicArray<Entity> EntitiesWithComponents(in DynamicArray<Entity> toFill, Span<EnumComponentType> types)
         {
             toFill.Clear();
-            foreach (Entity entity in Entities.AsSpan())
+            foreach (Entity entity in entities.AsSpan())
             {
                 int index = entity.entityID;
-                var added = false;
+                int componentsFound = 0;
                 foreach (EnumComponentType type in types)
                     switch (type)
                     {
                         case EnumComponentType.TransformComponent:
-                            if (Movers.data[index] != null && !added)
+                            if (transforms.data[index] != null)
                             {
-                                toFill.Add(Entities.data[index]);
-                                added = true;
+                                componentsFound++;
                             }
 
                             break;
                         case EnumComponentType.MoverComponent:
-                            if (Movers.data[index] != null && !added)
+                            if (movers.data[index] != null)
                             {
-                                toFill.Add(Entities.data[index]);
-                                added = true;
+                                componentsFound++;
                             }
-
                             break;
                     }
+
+                if (componentsFound == types.Length)
+                {
+                    toFill.Add(entities.data[index]);
+                }
             }
 
             return toFill;
@@ -58,19 +60,28 @@ namespace Spectral.Autonation.Managers
 
         public void Add(Entity toAdd, TransformC transform, MoverC mover, RendererC renderer)
         {
-            Entities.Add(toAdd);
-            Transforms.Add(transform);
-            Movers.Add(mover);
-            Renderers.Add(renderer);
+            entities.Add(toAdd);
+            transforms.Add(transform);
+            movers.Add(mover);
+            renderers.Add(renderer);
         }
 
         public void Remove(Entity toRemove)
         {
-            int index = Array.IndexOf(Entities.data, toRemove);
-            Entities.RemoveAt(index);
-            Transforms.RemoveAt(index);
-            Movers.RemoveAt(index);
-            Renderers.RemoveAt(index);
+            int index = Array.IndexOf(entities.data, toRemove);
+            entities.RemoveAt(index);
+            transforms.RemoveAt(index);
+            movers.RemoveAt(index);
+            renderers.RemoveAt(index);
+        }
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+        private static void ResetInstance()
+        {
+            Instance.entities.Clear();
+            Instance.transforms.Clear();
+            Instance.movers.Clear();
+            Instance.renderers.Clear();
         }
     }
 }

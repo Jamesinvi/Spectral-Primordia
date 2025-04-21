@@ -22,8 +22,8 @@ namespace Spectral.Autonation.Systems
             foreach (var entity in toMove.AsSpan())
             {
                 var index = entity.entityID;
-                TransformC transformC = EntityDatabase.Instance.Transforms.data[entity.entityID];
-                transformC.Translate(EntityDatabase.Instance.Movers.data[index].direction * (EntityDatabase.Instance.Movers.data[index].speed * dt));
+                TransformC transformC = EntityDatabase.Instance.transforms.data[entity.entityID];
+                transformC.Translate(EntityDatabase.Instance.movers.data[index].direction * (EntityDatabase.Instance.movers.data[index].speed * dt));
                 entity.linkedTransform.SetLocalPositionAndRotation(transformC.position, transformC.rotation);
                 entity.linkedTransform.localScale = transformC.scale;
             }

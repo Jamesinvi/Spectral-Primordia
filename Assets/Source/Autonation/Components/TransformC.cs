@@ -4,7 +4,7 @@ using Component = Spectral.Core.Component;
 
 namespace Spectral.Autonation.Components
 {
-    public class TransformC : Component
+    public record TransformC : Component
     {
         public EnumComponentType ComponentType => EnumComponentType.TransformComponent;
         public Vector3 position;

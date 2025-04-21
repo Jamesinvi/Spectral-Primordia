@@ -14,12 +14,9 @@ namespace Spectral.Autonation.Managers
         public Material mat;
         private List<EntitySystem> _fixedUpdateSystems;
         private List<EntitySystem> _lateUpdateSystems;
-
         private List<EntitySystem> _slowUpdateSystems;
-
-        private float _timeAtLastSlowUpdate;
         private List<EntitySystem> _updateSystems;
-        public MoveEntitySystem moveEntitySystem;
+        private float _timeAtLastSlowUpdate;
 
         private void Awake()
         {
@@ -27,7 +24,7 @@ namespace Spectral.Autonation.Managers
             _fixedUpdateSystems = new List<EntitySystem>(8);
             _lateUpdateSystems = new List<EntitySystem>(8);
             _slowUpdateSystems = new List<EntitySystem>(8);
-            moveEntitySystem = new MoveEntitySystem("MoveSystem", UpdateType.Update);
+            var moveEntitySystem = new MoveEntitySystem("MoveSystem", UpdateType.Update);
         }
 
         private void Start()

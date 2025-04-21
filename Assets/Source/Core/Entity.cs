@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Spectral.Core
 {
@@ -14,6 +15,14 @@ namespace Spectral.Core
             this.entityID = entityID;
             linkedGameObject = new GameObject("Entity " + entityID);
             linkedTransform = linkedGameObject.transform;
+        }
+
+        ~Entity()
+        {
+            if (linkedGameObject != null)
+            {
+                Object.Destroy(linkedGameObject);
+            }
         }
 
         public bool Equals(Entity other)

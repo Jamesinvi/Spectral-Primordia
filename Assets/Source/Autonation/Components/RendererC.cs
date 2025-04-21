@@ -5,7 +5,7 @@ using Component = Spectral.Core.Component;
 
 namespace Spectral.Autonation.Components
 {
-    public class RendererC : Component
+    public record RendererC : Component
     {
         private readonly Material _material;
         private readonly Mesh _mesh;
@@ -19,11 +19,10 @@ namespace Spectral.Autonation.Components
             _material = material;
         }
 
-
         public void LinkToEntityGameObject()
         {
-            EntityDatabase.Instance.Entities.data[entityIndex].linkedGameObject.AddComponent<MeshFilter>().sharedMesh = _mesh;
-            EntityDatabase.Instance.Entities.data[entityIndex].linkedGameObject.AddComponent<MeshRenderer>().sharedMaterial = _material;
+            EntityDatabase.Instance.entities.data[entityIndex].linkedGameObject.AddComponent<MeshFilter>().sharedMesh = _mesh;
+            EntityDatabase.Instance.entities.data[entityIndex].linkedGameObject.AddComponent<MeshRenderer>().sharedMaterial = _material;
         }
     }
 }

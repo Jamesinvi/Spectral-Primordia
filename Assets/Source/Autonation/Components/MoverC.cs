@@ -3,7 +3,7 @@ using Component = Spectral.Core.Component;
 
 namespace Spectral.Autonation.Components
 {
-    public class MoverC : Component
+    public record MoverC : Component
     {
         public Vector3 direction;
         public float speed;

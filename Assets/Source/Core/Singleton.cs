@@ -1,3 +1,5 @@
+using UnityEngine;
+
 namespace Spectral.Core
 {
     public abstract class Singleton<T> where T : new()
@@ -13,5 +15,6 @@ namespace Spectral.Core
                 return _instance;
             }
         }
+        
     }
 }
