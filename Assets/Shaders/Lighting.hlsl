@@ -10,7 +10,7 @@ real3 DiffusePointLight(real3 normWs, real3 albedo, real3 fragPosWS, real3 light
     real3 lightVec = lightPosWS - fragPosWS;
     NdotL = max(dot(lightVec, normWs), 0);
     real d = length(lightVec);
-    real h = smoothstep(1,0, (d*d)/(range*range));
+    real h = smoothstep(1, 0, (d * d) / (range * range));
     float attenuation = saturate(h);
     return albedo * NdotL * color * attenuation;
 }

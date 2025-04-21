@@ -1,7 +1,6 @@
-
 Shader"Spectral/TransparentUnlit"
 {
-  Properties
+    Properties
     {
         _Color("Color", Color) = (1.0,1.0,1.0,1.0)
         _MainTex("Texture", 2D) = "white"{}
@@ -11,13 +10,19 @@ Shader"Spectral/TransparentUnlit"
     SubShader
     {
         // The value of the LightMode Pass tag must match the ShaderTagId in ScriptableRenderContext.DrawRenderers
-		Tags { "Queue"="Transparent" "IgnoreProjector"="True" "RenderType"="Transparent" }
-		Cull Off Lighting Off ZWrite Off
-		Blend SrcAlpha OneMinusSrcAlpha
+        Tags
+        {
+            "Queue"="Transparent" "IgnoreProjector"="True" "RenderType"="Transparent"
+        }
+        Cull Off Lighting Off ZWrite Off
+        Blend SrcAlpha OneMinusSrcAlpha
 
         Pass
         {
-            Tags { "LightMode" = "Unlit" }
+            Tags
+            {
+                "LightMode" = "Unlit"
+            }
             ZWrite [_ZWrite]
             Cull [_Cull]
             HLSLPROGRAM
@@ -26,26 +31,26 @@ Shader"Spectral/TransparentUnlit"
             #include "SpectralCore.hlsl"
             #include "SpectralTransforms.hlsl"
 
-            CBUFFER_START (UnityPerMaterial)
-            float4 _Color;
-			sampler2D _MainTex;
-			float4 _MainTex_ST;
+            CBUFFER_START(UnityPerMaterial)
+                float4 _Color;
+                sampler2D _MainTex;
+                float4 _MainTex_ST;
             CBUFFER_END
 
 
             struct Attributes
             {
-                float4 posOS   : POSITION;
-                float2 uv      : TEXCOORD0;
+                float4 posOS : POSITION;
+                float2 uv : TEXCOORD0;
             };
 
             struct Varyings
             {
-                float4 posCS   : SV_POSITION;
-                float2 uv           : TEXCOORD0;
+                float4 posCS : SV_POSITION;
+                float2 uv : TEXCOORD0;
             };
 
-            Varyings vert (Attributes IN)
+            Varyings vert(Attributes IN)
             {
                 Varyings OUT;
                 OUT.posCS = TransformObjectToHClip(IN.posOS);
@@ -53,12 +58,11 @@ Shader"Spectral/TransparentUnlit"
                 return OUT;
             }
 
-            float4 frag (Varyings IN) : SV_TARGET
+            float4 frag(Varyings IN) : SV_TARGET
             {
                 float2 tiledUv = TRANSFORM_TEX(IN.uv, _MainTex);
-				float4 texColor = tex2D(_MainTex, tiledUv);
+                float4 texColor = tex2D(_MainTex, tiledUv);
                 return texColor * _Color;
-                
             }
             ENDHLSL
         }

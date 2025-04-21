@@ -152,7 +152,6 @@ Shader
             #include "SpectralDepth.hlsl"
             #pragma vertex DepthOnlyVert
             #pragma fragment DepthOnlyFrag
-
             ENDHLSL
         }
 

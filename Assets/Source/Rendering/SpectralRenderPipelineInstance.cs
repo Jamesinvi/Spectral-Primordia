@@ -1,28 +1,27 @@
 using System;
 using System.Collections.Generic;
-using Unity.Collections;
+using Spectral_RP;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.Assertions;
 using UnityEngine.Rendering;
 using LightType = UnityEngine.LightType;
 using RenderSettings = UnityEngine.RenderSettings;
 
-namespace Spectral_RP
+namespace Spectral.Rendering
 {
-    public partial class SpectralRenderPipelineInstance : RenderPipeline
+    public class SpectralRenderPipelineInstance : RenderPipeline
     {
         private const int MaxLightCount = 16;
+
+        private static readonly int DepthRTName = Shader.PropertyToID("_CameraDepth");
+        private readonly int _depthBufferBits;
+        private readonly RenderTargetIdentifier _depthID = new(DepthRTName);
 
         private readonly Vector4[] _lightColor = new Vector4[MaxLightCount];
         private readonly Vector4[] _lightData = new Vector4[MaxLightCount];
         private readonly Vector4[] _lightSpotDir = new Vector4[MaxLightCount];
         private readonly SpectralRenderPipelineAsset _renderPipelineAsset;
         private readonly int _shadowResolution;
-        private readonly int _depthBufferBits;
-
-        private static readonly int DepthRTName = Shader.PropertyToID("_CameraDepth");
-        private readonly RenderTargetIdentifier _depthID = new(DepthRTName);
 
         public SpectralRenderPipelineInstance(SpectralRenderPipelineAsset asset)
         {
@@ -50,9 +49,9 @@ namespace Spectral_RP
                 SortingSettings sortingSettings = new(camera);
                 // Tell Unity how to filter the culling results, to further specify which geometry to draw
                 // Use FilteringSettings.defaultValue to specify no filtering
-                FilteringSettings filteringSettings = FilteringSettings.defaultValue;
-                
-                
+                var filteringSettings = FilteringSettings.defaultValue;
+
+
                 // DrawingSettings specify what passes and options we need
                 DrawingSettings unlitDrawingSettings = new(ShaderTags.UnlitShaderTag, sortingSettings);
                 DrawingSettings depthDrawingSettings = new(ShaderTags.DepthShaderTag, sortingSettings)
@@ -66,7 +65,7 @@ namespace Spectral_RP
                 // Use these default settings for drawing stock shaders
                 DrawingSettings defaultDrawingSettings = new(ShaderTags.PassNameDefault, sortingSettings);
                 defaultDrawingSettings.SetShaderPassName(1, ShaderTags.PassNameDefault);
-                
+
                 // Get the culling parameters from the current Camera
                 camera.TryGetCullingParameters(out ScriptableCullingParameters cullingParameters);
                 // Use the culling parameters to perform a cull operation, and store the results
@@ -76,7 +75,7 @@ namespace Spectral_RP
 
                 RenderDepth(context, camera, sortingSettings, depthDrawingSettings, filteringSettings, cullingResults);
                 SetupLights(camera, context, ref cullingResults);
-                
+
                 //Get the setting from camera component
                 bool drawSkyBox = camera.clearFlags == CameraClearFlags.Skybox;
                 bool clearDepth = camera.clearFlags != CameraClearFlags.Nothing;
@@ -93,27 +92,27 @@ namespace Spectral_RP
                 if (drawSkyBox && RenderSettings.skybox != null) RenderSkybox(context, camera);
 
                 // Unlit Opaque
-                sortingSettings.criteria = SortingCriteria.CommonOpaque; 
+                sortingSettings.criteria = SortingCriteria.CommonOpaque;
                 unlitDrawingSettings.sortingSettings = sortingSettings;
                 filteringSettings.renderQueueRange = RenderQueueRange.opaque;
                 RenderObjects("Unlit Opaques", context, cullingResults, filteringSettings, unlitDrawingSettings);
-                
+
                 // Opaque
                 sortingSettings.criteria = SortingCriteria.CommonOpaque;
                 litDrawingSettings.sortingSettings = sortingSettings;
                 filteringSettings.renderQueueRange = RenderQueueRange.opaque;
                 RenderObjects("Lit Opaques", context, cullingResults, filteringSettings, litDrawingSettings);
-                
+
                 // Opaque default
                 defaultDrawingSettings.sortingSettings = sortingSettings;
                 RenderObjects("Render Opaque Objects Default Pass", context, cullingResults, filteringSettings, defaultDrawingSettings);
-                
+
                 // Transparent
                 sortingSettings.criteria = SortingCriteria.CommonTransparent;
                 unlitDrawingSettings.sortingSettings = sortingSettings;
                 filteringSettings.renderQueueRange = RenderQueueRange.transparent;
                 RenderObjects("Transparents", context, cullingResults, filteringSettings, unlitDrawingSettings);
-                
+
                 //Transparent default
                 defaultDrawingSettings.sortingSettings = sortingSettings;
                 RenderObjects("Render Transparent Objects Default Pass", context, cullingResults, filteringSettings, defaultDrawingSettings);
@@ -126,11 +125,11 @@ namespace Spectral_RP
                     context.DrawGizmos(camera, GizmoSubset.PostImageEffects);
                 }
 #endif
-                var releaseRTsCmd = CommandBufferPool.Get("ReleaseRTs");
+                CommandBuffer releaseRTsCmd = CommandBufferPool.Get("ReleaseRTs");
                 releaseRTsCmd.ReleaseTemporaryRT(DepthRTName);
                 context.ExecuteCommandBuffer(releaseRTsCmd);
                 CommandBufferPool.Release(releaseRTsCmd);
-                
+
                 context.Submit();
                 EndCameraRendering(context, camera);
             }
@@ -142,11 +141,11 @@ namespace Spectral_RP
         private void RenderDepth(ScriptableRenderContext context, Camera camera, SortingSettings sortingSettings, DrawingSettings depthDrawingSettings, FilteringSettings filteringSettings, CullingResults cullingResults)
         {
             CommandBuffer tempRTCmd = CommandBufferPool.Get("DepthRT");
-            var depthRTDescriptor = new RenderTextureDescriptor(camera.pixelWidth, camera.pixelHeight, RenderTextureFormat.Depth, depthBufferBits: _depthBufferBits);
+            var depthRTDescriptor = new RenderTextureDescriptor(camera.pixelWidth, camera.pixelHeight, RenderTextureFormat.Depth, _depthBufferBits);
             tempRTCmd.GetTemporaryRT(DepthRTName, depthRTDescriptor, FilterMode.Point);
             tempRTCmd.SetRenderTarget(_depthID);
             tempRTCmd.ClearRenderTarget(true, true, Color.black);
-                
+
             context.ExecuteCommandBuffer(tempRTCmd);
             CommandBufferPool.Release(tempRTCmd);
 
@@ -155,7 +154,7 @@ namespace Spectral_RP
             depthDrawingSettings.sortingSettings = sortingSettings;
             filteringSettings.renderQueueRange = RenderQueueRange.opaque;
             RenderObjects("Depth Prepass", context, cullingResults, filteringSettings, depthDrawingSettings);
-            
+
             CommandBuffer setGlobalTexCmd = CommandBufferPool.Get("SetGlobalTexture Depth");
             setGlobalTexCmd.SetGlobalTexture(DepthRTName, _depthID);
             context.ExecuteCommandBuffer(setGlobalTexCmd);
