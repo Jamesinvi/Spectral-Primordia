@@ -19,14 +19,13 @@ namespace Spectral.Autonation.Systems
         {
             Span<EnumComponentType> typesToQuery = stackalloc EnumComponentType[1] { EnumComponentType.MoverComponent };
             var toMove = EntityDatabase.Instance.EntitiesWithComponents(_toIterate, typesToQuery);
-            for (var index = 0; index < toMove.length; index++)
+            foreach (var entity in toMove.AsSpan())
             {
-                Entity entity = toMove.data[index];
+                var index = entity.entityID;
                 TransformC transformC = EntityDatabase.Instance.Transforms.data[entity.entityID];
                 transformC.Translate(EntityDatabase.Instance.Movers.data[index].direction * (EntityDatabase.Instance.Movers.data[index].speed * dt));
                 entity.linkedTransform.SetLocalPositionAndRotation(transformC.position, transformC.rotation);
                 entity.linkedTransform.localScale = transformC.scale;
-
             }
         }
     }

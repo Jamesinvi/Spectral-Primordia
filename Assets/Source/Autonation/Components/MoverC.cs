@@ -8,12 +8,12 @@ namespace Spectral.Autonation.Components
         public Vector3 direction;
         public float speed;
 
-        public MoverC(uint componentId, int entityIndex, float _speed, Vector3 dir)
+        public MoverC(uint componentId, int entityIndex, float speed, Vector3 dir)
         {
-            speed = _speed;
             direction = dir;
             this.entityIndex = entityIndex;
             this.componentId = componentId;
+            this.speed = speed;
         }
     }
 }

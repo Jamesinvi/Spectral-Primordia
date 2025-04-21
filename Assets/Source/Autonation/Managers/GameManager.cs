@@ -15,7 +15,6 @@ namespace Spectral.Autonation.Managers
         private List<EntitySystem> _fixedUpdateSystems;
         private List<EntitySystem> _lateUpdateSystems;
 
-        private RenderParams _renderParams;
         private List<EntitySystem> _slowUpdateSystems;
 
         private float _timeAtLastSlowUpdate;
