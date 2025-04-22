@@ -1,5 +1,3 @@
-using System;
-
 namespace Spectral.Core
 {
     public record Component

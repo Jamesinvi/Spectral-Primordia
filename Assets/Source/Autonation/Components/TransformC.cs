@@ -6,7 +6,6 @@ namespace Spectral.Autonation.Components
 {
     public record TransformC : Component
     {
-        public EnumComponentType ComponentType => EnumComponentType.TransformComponent;
         public Vector3 position;
         public Quaternion rotation;
         public Vector3 scale;
@@ -19,7 +18,9 @@ namespace Spectral.Autonation.Components
             this.componentId = componentId;
             this.entityIndex = entityIndex;
         }
-        
+
+        public EnumComponentType ComponentType => EnumComponentType.TransformComponent;
+
         public void Translate(Vector3 translation)
         {
             position += translation;

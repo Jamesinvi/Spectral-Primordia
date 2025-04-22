@@ -5,6 +5,8 @@ namespace Spectral.Core
         None = 0,
         TransformComponent,
         MoverComponent,
-        RendererComponent
+        RendererComponent,
+        BoundsComponent,
+        GenerateResourceComponent
     }
 }

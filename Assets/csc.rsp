@@ -1,0 +1,3 @@
+#"comments are done with hashtags and quotes, uncomment the third line if you want to use entity pools"
+-nowarn:0219,0414,0168,4014,1998,0162
+-warnaserror:CS0114,CS0108

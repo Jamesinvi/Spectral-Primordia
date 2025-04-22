@@ -9,7 +9,6 @@ namespace Spectral.Autonation.Components
     {
         private readonly Material _material;
         private readonly Mesh _mesh;
-        public EnumComponentType ComponentType => EnumComponentType.RendererComponent;
 
         public RendererC(uint componentId, int entityIndex, Mesh mesh, Material material)
         {
@@ -18,6 +17,8 @@ namespace Spectral.Autonation.Components
             _mesh = mesh;
             _material = material;
         }
+
+        public EnumComponentType ComponentType => EnumComponentType.RendererComponent;
 
         public void LinkToEntityGameObject()
         {

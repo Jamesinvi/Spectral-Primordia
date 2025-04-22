@@ -7,9 +7,11 @@ namespace Spectral.Autonation.Managers
 {
     public class EntityDatabase : Singleton<EntityDatabase>
     {
+        public readonly DynamicArray<BoundsC> boundsComponents;
         public readonly DynamicArray<Entity> entities;
         public readonly DynamicArray<MoverC> movers;
         public readonly DynamicArray<RendererC> renderers;
+        public readonly DynamicArray<GenerateResourceC> resourceGenerators;
         public readonly DynamicArray<TransformC> transforms;
 
         public EntityDatabase(int capacity = 2000)
@@ -18,7 +20,10 @@ namespace Spectral.Autonation.Managers
             transforms = new DynamicArray<TransformC>(capacity);
             movers = new DynamicArray<MoverC>(capacity);
             renderers = new DynamicArray<RendererC>(capacity);
+            boundsComponents = new DynamicArray<BoundsC>(capacity);
+            resourceGenerators = new DynamicArray<GenerateResourceC>(capacity);
         }
+
         public EntityDatabase() : this(2000)
         {
         }
@@ -28,42 +33,46 @@ namespace Spectral.Autonation.Managers
             toFill.Clear();
             foreach (Entity entity in entities.AsSpan())
             {
-                int index = entity.entityID;
-                int componentsFound = 0;
+                int index = entity.index;
+                var componentsFound = 0;
                 foreach (EnumComponentType type in types)
                     switch (type)
                     {
                         case EnumComponentType.TransformComponent:
-                            if (transforms.data[index] != null)
-                            {
-                                componentsFound++;
-                            }
+                            if (transforms.data[index] != null) componentsFound++;
 
                             break;
                         case EnumComponentType.MoverComponent:
-                            if (movers.data[index] != null)
-                            {
-                                componentsFound++;
-                            }
+                            if (movers.data[index] != null) componentsFound++;
+                            break;
+                        case EnumComponentType.BoundsComponent:
+                            if (boundsComponents.data[index] != null) componentsFound++;
+                            break;
+                        case EnumComponentType.GenerateResourceComponent:
+                            if (resourceGenerators.data[index] != null) componentsFound++;
                             break;
                     }
 
-                if (componentsFound == types.Length)
-                {
-                    toFill.Add(entities.data[index]);
-                }
+                if (componentsFound == types.Length) toFill.Add(entities.data[index]);
             }
 
             return toFill;
         }
 
 
-        public void Add(Entity toAdd, TransformC transform, MoverC mover, RendererC renderer)
+        public void Add(Entity toAdd,
+            TransformC transform = null,
+            MoverC mover = null,
+            RendererC renderer = null,
+            BoundsC bounds = null,
+            GenerateResourceC resourceGenerator = null)
         {
             entities.Add(toAdd);
             transforms.Add(transform);
             movers.Add(mover);
             renderers.Add(renderer);
+            boundsComponents.Add(bounds);
+            resourceGenerators.Add(resourceGenerator);
         }
 
         public void Remove(Entity toRemove)
@@ -73,6 +82,8 @@ namespace Spectral.Autonation.Managers
             transforms.RemoveAt(index);
             movers.RemoveAt(index);
             renderers.RemoveAt(index);
+            boundsComponents.RemoveAt(index);
+            resourceGenerators.RemoveAt(index);
         }
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
@@ -82,6 +93,8 @@ namespace Spectral.Autonation.Managers
             Instance.transforms.Clear();
             Instance.movers.Clear();
             Instance.renderers.Clear();
+            Instance.boundsComponents.Clear();
+            Instance.resourceGenerators.Clear();
         }
     }
 }

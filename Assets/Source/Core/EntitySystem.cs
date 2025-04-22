@@ -54,6 +54,7 @@ namespace Spectral.Core
         Update, // Per-frame
         LateUpdate, // Per-frame but after all Updates
         FixedUpdate, // Fixed tick defined by Engine
-        SlowUpdate // Once every 1/10 of a second
+        SlowUpdate, // Once every 1/10 of a second
+        EverySecond // Once every second
     }
 }
