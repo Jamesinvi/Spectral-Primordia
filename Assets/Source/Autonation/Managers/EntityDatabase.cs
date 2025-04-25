@@ -33,14 +33,14 @@ namespace Spectral.Autonation.Managers
             toFill.Clear();
             foreach (Entity entity in entities.AsSpan())
             {
-                int index = entity.index;
+                int index = entity;
+                if (index < 0) continue;
                 var componentsFound = 0;
                 foreach (EnumComponentType type in types)
                     switch (type)
                     {
                         case EnumComponentType.TransformComponent:
                             if (transforms.data[index] != null) componentsFound++;
-
                             break;
                         case EnumComponentType.MoverComponent:
                             if (movers.data[index] != null) componentsFound++;
@@ -85,6 +85,17 @@ namespace Spectral.Autonation.Managers
             boundsComponents.RemoveAt(index);
             resourceGenerators.RemoveAt(index);
         }
+
+        public void Remove(int indexToRemove)
+        {
+            entities.RemoveAt(indexToRemove);
+            transforms.RemoveAt(indexToRemove);
+            movers.RemoveAt(indexToRemove);
+            renderers.RemoveAt(indexToRemove);
+            boundsComponents.RemoveAt(indexToRemove);
+            resourceGenerators.RemoveAt(indexToRemove);
+        }
+
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void ResetInstance()

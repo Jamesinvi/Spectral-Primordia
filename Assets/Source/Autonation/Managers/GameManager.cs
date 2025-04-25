@@ -23,7 +23,7 @@ namespace Spectral.Autonation.Managers
             _lateUpdateSystems = new List<EntitySystem>(8);
             _slowUpdateSystems = new List<EntitySystem>(8);
             _updateEverySecondSystems = new List<EntitySystem>(8);
-            GenerateResourcesSystem generateResourcesSystem = new GenerateResourcesSystem("Resource Generation System");
+            var generateResourcesSystem = new GenerateResourcesSystem("Resource Generation System");
         }
 
         private void Update()

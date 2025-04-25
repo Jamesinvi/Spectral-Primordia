@@ -37,7 +37,7 @@ namespace Spectral.Core
 
         public void RemoveAt(int index)
         {
-            data[index] = default!;
+            data[index] = default;
             if (index == length - 1)
                 length--;
 

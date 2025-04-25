@@ -7,7 +7,7 @@ namespace Spectral.Autonation.Components
     {
         public Bounds bounds;
 
-        public BoundsC(Bounds bounds = default)
+        public BoundsC(int entityIndex, Bounds bounds = default) : base(entityIndex)
         {
             this.bounds = bounds;
         }

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Spectral_RP
+namespace Spectral.Rendering
 {
     public static class LightShaderData
     {

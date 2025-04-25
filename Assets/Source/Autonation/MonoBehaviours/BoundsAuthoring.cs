@@ -23,8 +23,7 @@ namespace Spectral.Autonation.MonoBehaviours
 
         private void OnDrawGizmos()
         {
-            Gizmos.matrix = transform.localToWorldMatrix;
-            Gizmos.DrawWireCube(bounds.center, bounds.size);
+            Gizmos.DrawWireCube(transform.position + bounds.center, bounds.size);
         }
 #endif
     }

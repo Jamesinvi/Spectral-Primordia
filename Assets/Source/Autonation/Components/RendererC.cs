@@ -10,10 +10,9 @@ namespace Spectral.Autonation.Components
         private readonly Material _material;
         private readonly Mesh _mesh;
 
-        public RendererC(uint componentId, int entityIndex, Mesh mesh, Material material)
+        public RendererC(uint componentId, int entityIndex, Mesh mesh, Material material) : base(entityIndex)
         {
             this.componentId = componentId;
-            this.entityIndex = entityIndex;
             _mesh = mesh;
             _material = material;
         }

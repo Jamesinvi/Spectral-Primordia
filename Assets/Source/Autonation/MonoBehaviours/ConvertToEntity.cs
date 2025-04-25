@@ -8,18 +8,23 @@ namespace Spectral.Autonation.MonoBehaviours
 {
     public class ConvertToEntity : MonoBehaviour
     {
-        [NonSerialized] public int generatedEntityIndex = -1;
+        [NonSerialized] public Entity generatedEntity;
 
         private void Start()
         {
-            var entity = new Entity(gameObject);
-            generatedEntityIndex = entity.index;
+            generatedEntity = new Entity(gameObject);
             BoundsC bounds = null;
             GenerateResourceC generateResource = null;
-            if (TryGetComponent(out BoundsAuthoring boundsAuthoring)) bounds = new BoundsC(boundsAuthoring.bounds);
-            if (TryGetComponent(out ResourceGeneratorAuthoring resourceGeneratorAuthoring)) generateResource = new GenerateResourceC(resourceGeneratorAuthoring.oxygenPerSecond, resourceGeneratorAuthoring.hydrogenPerSecond);
+            var transformComponent = new TransformC(0, generatedEntity, transform.position, transform.rotation, transform.localScale);
+            if (TryGetComponent(out BoundsAuthoring boundsAuthoring)) bounds = new BoundsC(generatedEntity, boundsAuthoring.bounds);
+            if (TryGetComponent(out ResourceGeneratorAuthoring resourceGeneratorAuthoring)) generateResource = new GenerateResourceC(generatedEntity, resourceGeneratorAuthoring.oxygenPerSecond, resourceGeneratorAuthoring.hydrogenPerSecond);
 
-            EntityDatabase.Instance.Add(entity, bounds: bounds, resourceGenerator: generateResource);
+            EntityDatabase.Instance.Add(generatedEntity, transformComponent, bounds: bounds, resourceGenerator: generateResource);
+        }
+
+        private void OnDestroy()
+        {
+            EntityDatabase.Instance.Remove(generatedEntity);
         }
     }
 }

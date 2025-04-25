@@ -21,11 +21,13 @@ namespace Spectral.Autonation.MonoBehaviours
         private InputAction _leftClickAction;
         private Camera _mainCamera;
         private GameObject _objectToSpawn;
+        private InputAction _rightClickAction;
 
         private void Start()
         {
             _objectToSpawn = Resources.Load<GameObject>("Prefabs/ENTT Electrolyzer");
             _leftClickAction = InputSystem.actions.FindAction("Left Button");
+            _rightClickAction = InputSystem.actions.FindAction("Right Button");
             _mainCamera = Camera.main;
             _cameraController = GetComponent<CameraController>();
             _layerMask = LayerMask.GetMask("Surface");
@@ -34,10 +36,9 @@ namespace Spectral.Autonation.MonoBehaviours
 
         private void Update()
         {
-            if (_leftClickAction.WasPressedThisFrame())
-            {
-                Ray ray = _mainCamera.ScreenPointToRay(Input.mousePosition);
+            Ray ray = _mainCamera.ScreenPointToRay(Input.mousePosition);
 
+            if (_leftClickAction.WasPressedThisFrame())
                 switch (_currentState)
                 {
                     case State.Selection when Physics.Raycast(ray, out _hit, Mathf.Infinity, _layerMask2.value):
@@ -48,10 +49,29 @@ namespace Spectral.Autonation.MonoBehaviours
                         SetState(State.Selection);
                         return;
                 }
-            }
+
+            if (_rightClickAction.WasPressedThisFrame())
+                switch (_currentState)
+                {
+                    case State.Selection when Physics.Raycast(ray, out _hit, Mathf.Infinity, _layerMask2.value):
+                        Destroy(_hit.collider.gameObject);
+                        return;
+                    case State.Building when Physics.Raycast(ray, out _hit, Mathf.Infinity, _layerMask.value):
+                        return;
+                }
         }
 
-        public void SetState(State state)
+        public void EnterBuildMode()
+        {
+            SetState(State.Building);
+        }
+
+        public void ExitBuildMode()
+        {
+            SetState(State.Selection);
+        }
+
+        private void SetState(State state)
         {
             _currentState = state;
         }

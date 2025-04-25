@@ -10,7 +10,7 @@ namespace Spectral.Autonation.Components
         public Quaternion rotation;
         public Vector3 scale;
 
-        public TransformC(uint componentId, int entityIndex, Vector3 position, Quaternion rotation, Vector3 scale)
+        public TransformC(uint componentId, int entityIndex, Vector3 position, Quaternion rotation, Vector3 scale) : base(entityIndex)
         {
             this.scale = scale;
             this.rotation = rotation;

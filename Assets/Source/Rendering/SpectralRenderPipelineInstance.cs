@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
-using Spectral_RP;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.Rendering.RenderGraphModule;
 using LightType = UnityEngine.LightType;
 using RenderSettings = UnityEngine.RenderSettings;
 
@@ -12,7 +12,6 @@ namespace Spectral.Rendering
     public class SpectralRenderPipelineInstance : RenderPipeline
     {
         private const int MaxLightCount = 16;
-
         private static readonly int DepthRTName = Shader.PropertyToID("_CameraDepth");
         private readonly int _depthBufferBits;
         private readonly RenderTargetIdentifier _depthID = new(DepthRTName);

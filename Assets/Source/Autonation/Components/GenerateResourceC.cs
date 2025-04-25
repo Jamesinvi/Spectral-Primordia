@@ -7,7 +7,7 @@ namespace Spectral.Autonation.Components
         public int hydrogenPerSecond;
         public int oxygenPerSecond;
 
-        public GenerateResourceC(int oxygenPerSecond, int hydrogenPerSecond)
+        public GenerateResourceC(int entityIndex, int oxygenPerSecond, int hydrogenPerSecond) : base(entityIndex)
         {
             this.oxygenPerSecond = oxygenPerSecond;
             this.hydrogenPerSecond = hydrogenPerSecond;

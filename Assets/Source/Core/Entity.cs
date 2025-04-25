@@ -38,6 +38,7 @@ namespace Spectral.Core
 
         public static implicit operator int(Entity entity)
         {
+            if (entity == null) return -1;
             return entity.index;
         }
 

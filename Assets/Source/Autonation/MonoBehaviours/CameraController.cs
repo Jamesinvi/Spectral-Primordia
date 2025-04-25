@@ -1,4 +1,6 @@
 using Spectral.Autonation.Managers;
+using Spectral.Core;
+using Spectral.Core.Math;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -13,14 +15,15 @@ namespace Spectral.Autonation.MonoBehaviours
         [SerializeField] public float _minZoomDistance = 1f;
         [SerializeField] public float _maxZoomDistance = 70f;
         [SerializeField] public Transform _focusedObject;
-        [SerializeField] public int _focusedEntityIndex;
         private Camera _cam;
         private Vector3 _currentVelocity;
+        private Entity _focusedEntity;
+        private Vector3 _focusedPosition;
 
         private InputAction _panCameraAction;
         private float _pitch;
         private bool _postStartWasCalled;
-        private InputAction _rightMouseButtonAction;
+        private InputAction _rightClickAction;
         private float _yaw;
         private InputAction _zoomAction;
 
@@ -32,16 +35,16 @@ namespace Spectral.Autonation.MonoBehaviours
         private void Start()
         {
             _panCameraAction = InputSystem.actions.FindAction("Rotate Camera");
-            _rightMouseButtonAction = InputSystem.actions.FindAction("Right Button");
+            _rightClickAction = InputSystem.actions.FindAction("Right Button");
             _zoomAction = InputSystem.actions.FindAction("Zoom");
         }
 
         private void Update()
         {
             if (!_postStartWasCalled) PostStart();
-            if (_rightMouseButtonAction.IsPressed())
+            if (_rightClickAction.IsPressed())
             {
-                var delta = _panCameraAction.ReadValue<Vector2>().normalized;
+                Vector2 delta = _panCameraAction.ReadValue<Vector2>().normalized;
                 _yaw += delta.x * _orbitSpeed;
                 _pitch -= delta.y * _orbitSpeed;
                 // Clamp pitch so you can't flip upside‑down
@@ -52,11 +55,12 @@ namespace Spectral.Autonation.MonoBehaviours
             _zoomDistance -= zoomDelta.y * _zoomSpeed * Time.deltaTime;
             _zoomDistance = Mathf.Clamp(_zoomDistance, _minZoomDistance, _maxZoomDistance);
 
-            if (_focusedEntityIndex != -1 && EntityDatabase.Instance.boundsComponents.data[_focusedEntityIndex] != null)
-                _zoomDistance = Mathf.Clamp(_zoomDistance, Mathf.Max(_minZoomDistance, EntityDatabase.Instance.boundsComponents.data[_focusedEntityIndex].bounds.extents.magnitude), _maxZoomDistance);
+            if (_focusedEntity != -1 && EntityDatabase.Instance.boundsComponents.data[_focusedEntity] != null)
+                _zoomDistance = Mathf.Clamp(_zoomDistance, Mathf.Max(_minZoomDistance, EntityDatabase.Instance.boundsComponents.data[_focusedEntity].bounds.extents.MaxComponent()) * 1.1f, _maxZoomDistance);
+            if (_focusedObject != null) _focusedPosition = _focusedObject.position;
             Quaternion rot = Quaternion.Euler(_pitch, _yaw, 0f);
             Vector3 offset = rot * Vector3.back * _zoomDistance;
-            Vector3 targetPosition = _focusedObject.position + offset;
+            Vector3 targetPosition = _focusedPosition + offset;
             transform.position = Vector3.Slerp(transform.position, targetPosition, Vector3.Distance(transform.position, targetPosition) / Time.deltaTime);
             transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(_focusedObject.transform.position - transform.position), _orbitSpeed);
         }
@@ -64,7 +68,8 @@ namespace Spectral.Autonation.MonoBehaviours
         public void SetFocusedObject(Transform focusedObject)
         {
             _focusedObject = focusedObject;
-            if (focusedObject.TryGetComponent(out ConvertToEntity convertToEntity)) _focusedEntityIndex = convertToEntity.generatedEntityIndex;
+            _focusedPosition = focusedObject.position;
+            if (focusedObject.TryGetComponent(out ConvertToEntity convertToEntity)) _focusedEntity = convertToEntity.generatedEntity;
         }
 
         private void PostStart()
