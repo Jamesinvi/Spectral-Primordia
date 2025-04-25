@@ -8,7 +8,5 @@ namespace Spectral.Autonation.Managers
         public int oxygen;
         public int hydrogen;
 
-        [CreateProperty] public string oxygenLabel => "Oxygen: " + oxygen;
-        [CreateProperty] public string hydrogenLabel=> "Hydrogen: " + hydrogen;
     }
 }
