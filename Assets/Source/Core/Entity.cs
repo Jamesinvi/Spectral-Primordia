@@ -1,9 +1,9 @@
 using System;
-using Spectral.Autonation.Managers;
+using Primordia.Primordia.Managers;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Spectral.Core
+namespace Primordia.Core
 {
     public class Entity : IEquatable<Entity>
     {

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Spectral.Core.Math
+namespace Primordia.Core.Math
 {
     public static class Vector3Extensions
     {

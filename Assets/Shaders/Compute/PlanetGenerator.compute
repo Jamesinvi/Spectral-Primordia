@@ -1,0 +1,70 @@
+#pragma kernel GenerateSphereFace
+
+#include "ShapeInfo.hlsl"
+#include "NoiseSettings.hlsl"
+#include "../Noise.cginc"
+RWStructuredBuffer<float3> vertices;
+RWStructuredBuffer<int> indices;
+RWStructuredBuffer<float2> uvs;
+StructuredBuffer<ShapeInfo> shapeInfos;
+StructuredBuffer<NoiseSettings> noiseSettings;
+float3 normal;
+
+float3 GetPointOnSphere(float3 p)
+{
+    // Components squared
+    float x2 = p.x * p.x;
+    float y2 = p.y * p.y;
+    float z2 = p.z * p.z;
+
+    // Calculate position on sphere
+    float x = p.x * sqrt(1 - (y2 + z2) / 2 + (y2 * z2) / 3);
+    float y = p.y * sqrt(1 - (z2 + x2) / 2 + (z2 * x2) / 3);
+    float z = p.z * sqrt(1 - (x2 + y2) / 2 + (x2 * y2) / 3);
+    return float3(x, y, z);
+}
+
+float3 GetNoise(float3 p, NoiseSettings settings)
+{
+    float baseShape = sNoiseOctaves(p, settings.octaves, settings.persistence, settings.lacunarity, settings.initialFrequency, settings.initialAmplitude) * settings.strength;
+    float ridges = ridgedNoise(p, settings.ridgeOctaves, settings.ridgeInitialFrequency, settings.ridgeGain, settings.ridgeLacunarity, settings.ridgeOffset, settings.ridgeInitialAmplitude) * settings.ridgeStrength;
+
+    float total = baseShape + ridges;
+    total = max(total, settings.minValue);
+
+    return p * total;
+}
+
+[numthreads(8,8,1)]
+void GenerateSphereFace(uint3 idx : SV_DispatchThreadID)
+{
+    uint row = idx.x;
+    uint col = idx.y;
+    float3 axisA = normal.yzx;
+    float3 axisB = cross(normal, axisA);
+    uint resolution = shapeInfos[0].resolution;
+
+    // bail out threads outside the mesh
+    if (row >= resolution || col >= resolution) return;
+
+    uint vertexIndex = row * resolution + col;
+    uint triangleIndex = (row * (resolution - 1) + col) * 6;
+
+    float2 t = float2(col, row) / (resolution - 1);
+    float3 pointOnCube = normal + axisA * (2 * t.x - 1) + axisB * (2 * t.y - 1);
+    float3 pointOnSphere = GetPointOnSphere(pointOnCube);
+    pointOnSphere += GetNoise(pointOnSphere, noiseSettings[0]);
+    pointOnSphere *= shapeInfos[0].radius;
+    vertices[vertexIndex] = pointOnSphere;
+    uvs[vertexIndex] = length(pointOnSphere / shapeInfos[0].radius) - 1;
+
+    if (row != resolution - 1 && col != resolution - 1)
+    {
+        indices[triangleIndex + 0] = vertexIndex;
+        indices[triangleIndex + 1] = vertexIndex + resolution + 1;
+        indices[triangleIndex + 2] = vertexIndex + resolution;
+        indices[triangleIndex + 3] = vertexIndex;
+        indices[triangleIndex + 4] = vertexIndex + 1;
+        indices[triangleIndex + 5] = vertexIndex + resolution + 1;
+    }
+}

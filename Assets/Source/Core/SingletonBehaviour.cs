@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Spectral.Core
+namespace Primordia.Core
 {
     public class SingletonBehaviour<T> : MonoBehaviour where T : SingletonBehaviour<T>
     {

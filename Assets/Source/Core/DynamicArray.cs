@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Spectral.Core
+namespace Primordia.Core
 {
     public class DynamicArray<T>
     {

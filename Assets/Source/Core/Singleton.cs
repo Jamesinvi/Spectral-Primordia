@@ -1,4 +1,4 @@
-namespace Spectral.Core
+namespace Primordia.Core
 {
     public abstract class Singleton<T> where T : new()
     {

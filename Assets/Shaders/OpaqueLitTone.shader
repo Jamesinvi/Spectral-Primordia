@@ -154,7 +154,6 @@ Shader
                 "LightMode" = "DepthOnly"
             }
             ZWrite On
-            ColorMask R
             HLSLPROGRAM
             #include "SpectralDepth.hlsl"
             #pragma vertex DepthOnlyVert

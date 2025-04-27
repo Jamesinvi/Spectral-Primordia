@@ -1,4 +1,4 @@
-namespace Spectral.Core
+namespace Primordia.Core
 {
     public record Component
     {

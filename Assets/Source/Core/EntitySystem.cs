@@ -2,7 +2,7 @@ using System;
 using System.Runtime.CompilerServices;
 using Unity.Profiling;
 
-namespace Spectral.Core
+namespace Primordia.Core
 {
     public abstract class EntitySystem : IEquatable<EntitySystem>
     {
