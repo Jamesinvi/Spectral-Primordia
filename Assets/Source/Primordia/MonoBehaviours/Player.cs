@@ -20,12 +20,10 @@ namespace Primordia.Primordia.MonoBehaviours
         private LayerMask _layerMask2;
         private InputAction _leftClickAction;
         private Camera _mainCamera;
-        private GameObject _objectToSpawn;
         private InputAction _rightClickAction;
 
         private void Start()
         {
-            _objectToSpawn = Resources.Load<GameObject>("Prefabs/ENTT Electrolyzer");
             _leftClickAction = InputSystem.actions.FindAction("Left Button");
             _rightClickAction = InputSystem.actions.FindAction("Right Button");
             _mainCamera = Camera.main;
@@ -45,7 +43,6 @@ namespace Primordia.Primordia.MonoBehaviours
                         _cameraController.SetFocusedObject(_hit.collider.transform);
                         return;
                     case State.Building when Physics.Raycast(ray, out _hit, Mathf.Infinity, _layerMask.value):
-                        Instantiate(_objectToSpawn, _hit.point, Quaternion.LookRotation(-_hit.normal) * Quaternion.Euler(-90, 0, 0));
                         SetState(State.Selection);
                         return;
                 }
