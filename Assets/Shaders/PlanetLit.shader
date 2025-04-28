@@ -10,7 +10,6 @@ Shader
         _LowlandsColor("Lowlands Color", Color) = (1.0,1.0,1.0,1.0)
         _WaterBedColor("Water Color", Color) = (1.0,1.0,1.0,1.0)
         [Header(Blending)]
-        _TriplanarBlendSharpness("Peaks Color", Float) = 1
         _SlopeMultiplier("Slope Multiplier", Range(0,5)) =1
         _WaterLevel("Waterbed=>LowLands", Range(0,1)) = 0.1
         _LowToMid("Lowlands=>Midlands", Range(0,1)) = 0.33
