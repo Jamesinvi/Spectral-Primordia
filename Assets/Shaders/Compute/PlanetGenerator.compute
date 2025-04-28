@@ -27,9 +27,13 @@ float3 GetPointOnSphere(float3 p)
 float3 GetNoise(float3 p, NoiseSettings settings)
 {
     float baseShape = sNoiseOctaves(p, settings.octaves, settings.persistence, settings.lacunarity, settings.initialFrequency, settings.initialAmplitude) * settings.strength;
+    float details = sNoiseOctaves(p, settings.detailOctaves, settings.detailPersistence, settings.detailLacunarity, settings.detailInitialFrequency, settings.detailInitialFrequency) * settings.detailStrength;
     float ridges = ridgedNoise(p, settings.ridgeOctaves, settings.ridgeInitialFrequency, settings.ridgeGain, settings.ridgeLacunarity, settings.ridgeOffset, settings.ridgeInitialAmplitude) * settings.ridgeStrength;
 
-    float total = baseShape + ridges;
+    baseShape = max(baseShape, settings.baseMinValue);
+    details=max(details, settings.detailMinValue);
+    ridges=max(ridges, settings.ridgeMinValue);
+    float total = baseShape + details + ridges;
     total = max(total, settings.minValue);
 
     return p * total;

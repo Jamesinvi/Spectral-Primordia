@@ -3,21 +3,28 @@ Shader
 {
     Properties
     {
+        [Header(Colors)]
         _PeakColor("Peaks Color", Color) = (1.0,1.0,1.0,1.0)
-        _BlendSharpness("Peaks Color", Float) = 1
         _HighlandsColor("Highlands Color", Color) = (1.0,1.0,1.0,1.0)
         _MidlandsColor("Midlands Color", Color) = (1.0,1.0,1.0,1.0)
         _LowlandsColor("Lowlands Color", Color) = (1.0,1.0,1.0,1.0)
         _WaterBedColor("Water Color", Color) = (1.0,1.0,1.0,1.0)
+        [Header(Blending)]
+        _TriplanarBlendSharpness("Peaks Color", Float) = 1
+        _SlopeMultiplier("Slope Multiplier", Range(0,5)) =1
         _WaterLevel("Waterbed=>LowLands", Range(0,1)) = 0.1
         _LowToMid("Lowlands=>Midlands", Range(0,1)) = 0.33
         _MidToHigh("Midlands=>Highlands", Range(0,1)) = 0.66
         _HighToPeak("Highlands=>Peaks", Range(0,1)) = 0.90
         _MaxAltitude("MaxAltitude", Float) = 1
-        _SmoothnessTex("Smoothness Map", 2D) = "white"{}
-        _Normal("Normal", 2D) = "bump" {}
+        [Header(Normals)]
+        [Normal][NoScaleOffset]_Normal("Normal", 2D) = "bump" {}
         _NormalStrength("Normal Strength", Range(0,1)) = 1.0
         _Smoothness("Smoothness", Range(0,1)) = 0.5
+        [NoScaleOffset]_SmoothnessTex("Smoothness Map", 2D) = "white"{}
+        [Header(Triplanar)]
+        _TriplanarScale ("Tri-planar Scale", Float) = 1
+        _TriplanarBlendSharpness ("Tri-planar Blend Sharpness", Float) = 1
     }
     SubShader
     {
@@ -35,7 +42,7 @@ Shader
             #include "SpectralCore.hlsl"
             #include "SpectralTransforms.hlsl"
             #include "Lighting.hlsl"
-            #pragma multi_compile __ NORMAL_ON
+            #include "Triplanar.hlsl"
 
             CBUFFER_START(UnityPerMaterial)
                 real4 _PeakColor;
@@ -44,22 +51,17 @@ Shader
                 real4 _LowlandsColor;
                 real4 _WaterBedColor;
                 real _NormalStrength;
-                real _BlendSharpness;
+                real _TriplanarBlendSharpness;
+                real _TriplanarScale;
                 real _Smoothness;
+                real _SlopeMultiplier;
                 real _WaterLevel;
                 real _LowToMid;
                 real _MidToHigh;
                 real _HighToPeak;
                 real _MaxAltitude;
+                sampler2D _Normal;
                 sampler2D _SmoothnessTex;
-            CBUFFER_END
-
-            #define MAXLIGHTCOUNT 16
-
-            CBUFFER_START(Lights)
-                real4 _LightColors[MAXLIGHTCOUNT];
-                real4 _LightData[MAXLIGHTCOUNT];
-                real4 _LightSpotDirs[MAXLIGHTCOUNT];
             CBUFFER_END
 
             struct Attributes
@@ -96,20 +98,22 @@ Shader
             {
                 real remappedHeight = Remap(0, _MaxAltitude, 0, 1, height);
                 real t1 = smoothstep(_WaterLevel, _LowToMid, remappedHeight);
-                real t2 = smoothstep(_LowToMid, _MidToHigh, remappedHeight) * slope;
+                real t2 = smoothstep(_LowToMid, _MidToHigh, remappedHeight);
                 real t3 = smoothstep(_MidToHigh, _HighToPeak, remappedHeight);
                 real t4 = smoothstep(_HighToPeak, 1.0, remappedHeight);
                 real4 waterLowBlend = lerp(_WaterBedColor, _LowlandsColor, t1);
                 real4 lowMidBlend = lerp(waterLowBlend, _MidlandsColor, t2);
                 real4 midHighBlend = lerp(lowMidBlend, _HighlandsColor, t3);
                 real4 finalColor = lerp(midHighBlend, _PeakColor, t4);
+                finalColor = lerp(finalColor, _HighlandsColor, 1-pow(slope,_SlopeMultiplier));
                 waterMask = 1 - t1;
                 return finalColor;
             }
 
-
+   
             real4 frag(Varyings IN) : SV_TARGET
             {
+
                 // Normalize the interpolated vectors
                 real3 normWS = normalize(IN.normWS);
                 real3 tanWS = normalize(IN.tanWS.xyz);
@@ -120,12 +124,8 @@ Shader
                 real4 albedo = BlendElevation(IN.uv.x, slope, waterMask);
                 real4 smoothness = tex2D(_SmoothnessTex, IN.uv) * _Smoothness * waterMask;;
                 albedo.xyz *= ambient.xyz;
-                #if NORMAL_ON
                 // Sample and unpack the normal map (gives a tangent-space normal)
-                real3 normTS = UnpackNormalScale(tex2D(_Normal, IN.uv), _NormalStrength);
-                #else
-                real3 normTS = float3(0.0, 0.0, 1.0);
-                #endif
+                real3 normTS = TriplanarNormalMap(IN.posWS, normWS,_Normal,_NormalStrength,_TriplanarScale,_TriplanarBlendSharpness,0);
                 real3x3 TBN = CreateTangentToWorld(normWS, tanWS, IN.tanWS.w); // Tangent-bitangent-normal
                 normWS = TransformTangentToWorld(normTS, TBN, true);
 
@@ -148,7 +148,7 @@ Shader
                     info.lightData = _LightData[i];
                     info.lightCol = _LightColors[i];
                     info.reflectionCol = reflectionCol;
-                    albedo += LightContribution(info);
+                    albedo += LightContribution(info,1);
                 }
 
                 for (int id2 = 4; id2 < min(unity_LightData.y, 8); id2++)
@@ -164,7 +164,7 @@ Shader
                     info.lightData = _LightData[i];
                     info.lightCol = _LightColors[i];
                     info.reflectionCol = reflectionCol;
-                    albedo += LightContribution(info);
+                    albedo += LightContribution(info,1);
                 }
                 return albedo;
             }

@@ -41,14 +41,6 @@ Shader
                 real4 _MainTex_ST;
             CBUFFER_END
 
-            #define MAXLIGHTCOUNT 16
-
-            CBUFFER_START(Lights)
-                real4 _LightColors[MAXLIGHTCOUNT];
-                real4 _LightData[MAXLIGHTCOUNT];
-                real4 _LightSpotDirs[MAXLIGHTCOUNT];
-            CBUFFER_END
-
             struct Attributes
             {
                 real4 posOS : POSITION;
@@ -118,7 +110,7 @@ Shader
                     info.lightData = _LightData[i];
                     info.lightCol = _LightColors[i];
                     info.reflectionCol = reflectionCol;
-                    albedo += LightContribution(info);
+                    albedo += LightContribution(info,1);
                 }
 
                 for (int id2 = 4; id2 < min(unity_LightData.y, 8); id2++)
@@ -134,7 +126,7 @@ Shader
                     info.lightData = _LightData[i];
                     info.lightCol = _LightColors[i];
                     info.reflectionCol = reflectionCol;
-                    albedo += LightContribution(info);
+                    albedo += LightContribution(info,1);
                 }
                 return albedo;
             }

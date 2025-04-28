@@ -71,6 +71,7 @@ namespace Primordia.Primordia.PlanetGeneration
                 }
 
                 SphereGenerator.GenerateCubeSphereFace(_meshFilters[i].sharedMesh, normals[i], new ShapeInfo(shapeInfoConfiguration), new NoiseSettings(shapeInfoConfiguration), computeShader);
+                
             }
         }
     }

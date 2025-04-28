@@ -4,7 +4,7 @@
 
 #ifndef NOISESETTINGS_HLSL
 #define NOISESETTINGS_HLSL
-// Generated from Spectral.Autonation.PlanetGeneration.NoiseSettings
+// Generated from Primordia.Primordia.PlanetGeneration.NoiseSettings
 // PackingRules = Exact
 struct NoiseSettings
 {
@@ -14,6 +14,14 @@ struct NoiseSettings
     float initialFrequency;
     float initialAmplitude;
     float strength;
+    float baseMinValue;
+    int detailOctaves;
+    float detailPersistence;
+    float detailLacunarity;
+    float detailInitialFrequency;
+    float detailInitialAmplitude;
+    float detailStrength;
+    float detailMinValue;
     int ridgeOctaves;
     float ridgeLacunarity;
     float ridgeGain;
@@ -21,6 +29,7 @@ struct NoiseSettings
     float ridgeInitialFrequency;
     float ridgeInitialAmplitude;
     float ridgeStrength;
+    float ridgeMinValue;
     float minValue;
 };
 

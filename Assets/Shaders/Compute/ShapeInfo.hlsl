@@ -4,7 +4,7 @@
 
 #ifndef SHAPEINFO_HLSL
 #define SHAPEINFO_HLSL
-// Generated from Spectral.Autonation.PlanetGeneration.ShapeInfo
+// Generated from Primordia.Primordia.PlanetGeneration.ShapeInfo
 // PackingRules = Exact
 struct ShapeInfo
 {

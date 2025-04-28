@@ -1,4 +1,13 @@
 ﻿#include "SpectralCore.hlsl"
+
+#define MAXLIGHTCOUNT 16
+CBUFFER_START(Lights)
+    real4 _LightColors[MAXLIGHTCOUNT];
+    real4 _LightData[MAXLIGHTCOUNT];
+    real4 _LightSpotDirs[MAXLIGHTCOUNT];
+CBUFFER_END
+
+
 real3 DiffuseDirectionalLight(real3 albedo, real3 lightCol, real3 lightDirWS, real3 surfNormWS, out real NdotL)
 {
     NdotL = max(dot(surfNormWS, lightDirWS), 0.0);
@@ -70,20 +79,22 @@ struct ShadingInfo
     real3 reflectionCol;
 };
 
-real4 LightContribution(ShadingInfo surf)
+real4 LightContribution(ShadingInfo surf, real contributionMultiplier)
 {
     real4 contribution = real4(0, 0, 0, 0);
     if (surf.lightType == -1)
     {
         real NdotL;
-        contribution.xyz += DiffuseDirectionalLight(surf.albedo.rgb, surf.lightCol, surf.lightData, surf.normWS, NdotL);
-        contribution.xyz += GetSpecular(surf.normWS, surf.lightData, surf.lightCol * surf.reflectionCol, surf.smoothness, 1, surf.viewDir) * NdotL;
+        real3 diffuse = DiffuseDirectionalLight(surf.albedo.rgb, surf.lightCol, surf.lightData.xyz, surf.normWS, NdotL);
+        real3 specular = GetSpecular(surf.normWS, surf.lightData, surf.lightCol * surf.reflectionCol, surf.smoothness, 1, surf.viewDir) * NdotL;
+        contribution+= float4((diffuse + specular) * contributionMultiplier,0);
     }
     if (surf.lightType == -2)
     {
         real NdotL;
-        contribution.xyz += DiffusePointLight(surf.normWS, surf.albedo.rgb, surf.posWS, surf.lightData, surf.lightData.w, surf.lightCol, NdotL);
-        contribution.xyz += GetSpecular(surf.normWS, surf.lightData, surf.lightCol * surf.reflectionCol, surf.smoothness, 1, surf.viewDir) * NdotL;
+        real3 diffuse = DiffusePointLight(surf.normWS, surf.albedo.rgb, surf.posWS, surf.lightData, surf.lightData.w, surf.lightCol, NdotL);
+        real3 specular =  GetSpecular(surf.normWS, surf.lightData, surf.lightCol * surf.reflectionCol, surf.smoothness, 1, surf.viewDir) * NdotL;
+        contribution+= float4((diffuse + specular) * contributionMultiplier,0);
     }
     return contribution;
 }

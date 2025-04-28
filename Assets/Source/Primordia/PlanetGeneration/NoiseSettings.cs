@@ -16,6 +16,15 @@ namespace Primordia.Primordia.PlanetGeneration
         public float initialFrequency;
         public float initialAmplitude;
         public float strength;
+        public float baseMinValue;
+        [Title("Detail Noise")] 
+        [Range(0, 10)] public int detailOctaves;
+        public float detailPersistence;
+        public float detailLacunarity;
+        public float detailInitialFrequency;
+        public float detailInitialAmplitude;
+        public float detailStrength;
+        public float detailMinValue;
         [Title("Ridges")] [Range(0, 8)] public int ridgeOctaves;
         public float ridgeLacunarity;
         public float ridgeGain;
@@ -23,24 +32,12 @@ namespace Primordia.Primordia.PlanetGeneration
         public float ridgeInitialFrequency;
         public float ridgeInitialAmplitude;
         public float ridgeStrength;
+        public float ridgeMinValue;
         [Title("Extra")] public float minValue;
 
         public NoiseSettings(ShapeInfoConfiguration shapeInfoConfiguration)
         {
-            octaves = shapeInfoConfiguration.noiseSettings.octaves;
-            persistence = shapeInfoConfiguration.noiseSettings.persistence;
-            lacunarity = shapeInfoConfiguration.noiseSettings.lacunarity;
-            initialFrequency = shapeInfoConfiguration.noiseSettings.initialFrequency;
-            initialAmplitude = shapeInfoConfiguration.noiseSettings.initialAmplitude;
-            strength = shapeInfoConfiguration.noiseSettings.strength;
-            ridgeOctaves = shapeInfoConfiguration.noiseSettings.ridgeOctaves;
-            ridgeLacunarity = shapeInfoConfiguration.noiseSettings.ridgeLacunarity;
-            ridgeGain = shapeInfoConfiguration.noiseSettings.ridgeGain;
-            ridgeOffset = shapeInfoConfiguration.noiseSettings.ridgeOffset;
-            ridgeInitialFrequency = shapeInfoConfiguration.noiseSettings.ridgeInitialFrequency;
-            ridgeInitialAmplitude = shapeInfoConfiguration.noiseSettings.ridgeInitialAmplitude;
-            minValue = shapeInfoConfiguration.noiseSettings.minValue;
-            ridgeStrength = shapeInfoConfiguration.noiseSettings.ridgeStrength;
+            this = shapeInfoConfiguration.noiseSettings;
         }
     }
 }
