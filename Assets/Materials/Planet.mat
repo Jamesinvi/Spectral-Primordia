@@ -43,6 +43,14 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _HeightTex:
+        m_Texture: {fileID: 18700000, guid: 638096730bc43443d8f56023a304794d, type: 2}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _HeigthMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _MainTex:
         m_Texture: {fileID: 28684132378477856, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
         m_Scale: {x: 1, y: 1}
@@ -53,6 +61,14 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _Normal:
         m_Texture: {fileID: 2800000, guid: 69c06737db17b4e10a8d78a18d7dffdb, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _NormalA:
+        m_Texture: {fileID: 2800000, guid: 5de0a0cd80b3f405ca828528426ccadf, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _NormalB:
+        m_Texture: {fileID: 2800000, guid: d5bb6cd72f32d4dd3bacc455d1ed0b56, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
@@ -67,6 +83,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _TriplanarNoise:
+        m_Texture: {fileID: 2800000, guid: cfbd06723eba9431db811daddbd1819b, type: 3}
+        m_Scale: {x: 0.28, y: 4}
+        m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
     - _BlendSharpness: 3
@@ -77,37 +97,40 @@ Material:
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
-    - _HighToPeak: 0.924
-    - _LowToMid: 0.159
-    - _MaxAltitude: 0.04
+    - _HighToPeak: 0.833
+    - _LowToMid: 0.07
+    - _MaxAltitude: 0.035
     - _MaxDistance: 50
     - _MaxTess: 16
     - _Metallic: 0
-    - _MidToHigh: 0.455
+    - _MidToHigh: 0.243
     - _MinDistance: 5
     - _MinTess: 1
     - _Mode: 0
     - _NormalMapEnabled: 0
-    - _NormalStrength: 0.83
+    - _NormalStrength: 1
     - _OcclusionStrength: 1
     - _Parallax: 0.02
-    - _SlopeMultiplier: 5
-    - _Smoothness: 0.902
+    - _SlopeMultiplier: 10
+    - _Smoothness: 1
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _TriplanarBlendSharpness: 1
-    - _TriplanarScale: 3
+    - _TriplanarScale: 0.12
     - _UVSec: 0
-    - _WaterLevel: 0
+    - _WaterLevel: 0.064
     - _ZWrite: 1
     m_Colors:
     - _Color: {r: 0.18770024, g: 0.6981132, b: 0.27813196, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _HighlandsColor: {r: 0.254717, g: 0.18878326, b: 0.12135102, a: 1}
+    - _HighlandsColor: {r: 0.41509432, g: 0.3201317, b: 0.22516909, a: 1}
     - _LowlandsColor: {r: 0.6886792, g: 0.57040465, b: 0.10070309, a: 1}
     - _MainTex: {r: 1, g: 1, b: 1, a: 1}
     - _MidlandsColor: {r: 0.12995623, g: 0.6313726, b: 0, a: 1}
+    - _NormalStrength: {r: 1, g: 1, b: 0, a: 0}
+    - _NormalStrengthS: {r: 1, g: 1, b: 0, a: 0}
+    - _NormalStrengths: {r: 1, g: 0.54, b: 0, a: 0}
     - _PeakColor: {r: 1, g: 1, b: 1, a: 1}
     - _SlopeMultiplier: {r: 1, g: 1, b: 1, a: 1}
     - _WaterBedColor: {r: 0.7647059, g: 0.7921569, b: 0, a: 1}

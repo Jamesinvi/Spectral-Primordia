@@ -87,8 +87,8 @@ Shader "Spectral/Ocean"
             {
                 real3 normWS = normalize(IN.normWS);
 
-                real3 nA = TriplanarNormalMap(IN.posWS, normWS, _NormalA, _NormalStrengthA, _TriplanarScale, _TriplanarBlendSharpness, _Time.x);
-                real3 nB = TriplanarNormalMap(IN.posWS, normWS, _NormalB, _NormalStrengthB, _TriplanarScale, _TriplanarBlendSharpness, -_Time.x);
+                real3 nA = TriplanarNormalMap(IN.posWS, normWS, _NormalA, _NormalStrengthA, _TriplanarScale, _TriplanarBlendSharpness, _Time.x, 1);
+                real3 nB = TriplanarNormalMap(IN.posWS, normWS, _NormalB, _NormalStrengthB, _TriplanarScale, _TriplanarBlendSharpness, -_Time.x, 1);;
                 // merge normal textures
                 real3 normTS = normalize(nA + nB);
 
@@ -99,7 +99,7 @@ Shader "Spectral/Ocean"
                 real thickness = saturate((terrainVSZ - waterVSZ) / _MaxDepth);
                 real sqrtThickness = sqrt(thickness);
                 real4 albedo = lerp(_ShallowColor, _DeepColor, sqrtThickness);
-                
+
                 real3 tanWS = normalize(IN.tanWS.xyz);
                 real3 viewDir = normalize(_WorldSpaceCameraPos.xyz - IN.posWS.xyz);
                 real4 smoothness = _Smoothness;

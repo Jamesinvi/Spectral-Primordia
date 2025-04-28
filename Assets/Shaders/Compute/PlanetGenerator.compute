@@ -6,9 +6,12 @@
 RWStructuredBuffer<float3> vertices;
 RWStructuredBuffer<int> indices;
 RWStructuredBuffer<float2> uvs;
+RWStructuredBuffer<float2> uvs2;
+RWTexture2D<float4> heightTex;
 StructuredBuffer<ShapeInfo> shapeInfos;
 StructuredBuffer<NoiseSettings> noiseSettings;
 float3 normal;
+int faceIndex;
 
 float3 GetPointOnSphere(float3 p)
 {
@@ -31,8 +34,8 @@ float3 GetNoise(float3 p, NoiseSettings settings)
     float ridges = ridgedNoise(p, settings.ridgeOctaves, settings.ridgeInitialFrequency, settings.ridgeGain, settings.ridgeLacunarity, settings.ridgeOffset, settings.ridgeInitialAmplitude) * settings.ridgeStrength;
 
     baseShape = max(baseShape, settings.baseMinValue);
-    details=max(details, settings.detailMinValue);
-    ridges=max(ridges, settings.ridgeMinValue);
+    details = max(details, settings.detailMinValue);
+    ridges = max(ridges, settings.ridgeMinValue);
     float total = baseShape + details + ridges;
     total = max(total, settings.minValue);
 
@@ -60,7 +63,14 @@ void GenerateSphereFace(uint3 idx : SV_DispatchThreadID)
     pointOnSphere += GetNoise(pointOnSphere, noiseSettings[0]);
     pointOnSphere *= shapeInfos[0].radius;
     vertices[vertexIndex] = pointOnSphere;
-    uvs[vertexIndex] = length(pointOnSphere / shapeInfos[0].radius) - 1;
+    float altitude = length(pointOnSphere / shapeInfos[0].radius) - 1;
+    // Handle UVs
+    float2 uv = float2(col, row) / float2(resolution - 1, resolution - 1);
+    float2 uv2 = float2(altitude, faceIndex);
+    uvs[vertexIndex] = uv;
+    uvs2[vertexIndex] = uv2;
+
+    heightTex[float2(col, row)] = altitude;
 
     if (row != resolution - 1 && col != resolution - 1)
     {

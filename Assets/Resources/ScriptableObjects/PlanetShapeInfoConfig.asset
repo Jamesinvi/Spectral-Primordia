@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 25db6506f03b408bbefc69560d2ac47b, type: 3}
   m_Name: PlanetShapeInfoConfig
   m_EditorClassIdentifier: 
-  resolution: 5
+  resolution: 3
   radius: 35
   noiseSettings:
     octaves: 8
@@ -30,11 +30,11 @@ MonoBehaviour:
     detailStrength: 0.03
     detailMinValue: -0.1
     ridgeOctaves: 7
-    ridgeLacunarity: 3.57
-    ridgeGain: 1.4
+    ridgeLacunarity: 5.42
+    ridgeGain: 1.01
     ridgeOffset: 0.6
-    ridgeInitialFrequency: 0.62
-    ridgeInitialAmplitude: 0.29
-    ridgeStrength: 0.3
+    ridgeInitialFrequency: 1.57
+    ridgeInitialAmplitude: 0.54
+    ridgeStrength: 0.18
     ridgeMinValue: 0
     minValue: -0.51

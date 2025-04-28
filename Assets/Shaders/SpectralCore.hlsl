@@ -28,4 +28,10 @@
 #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/CommonLighting.hlsl"
 #include "ShaderVariables.hlsl"
 
+real4 Debug(real v)
+{
+    return real4(v, v, v, 1);
+}
+
+
 #endif
