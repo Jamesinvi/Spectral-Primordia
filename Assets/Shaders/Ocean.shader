@@ -10,6 +10,8 @@ Shader "Spectral/Ocean"
         [Normal][NoScaleOffset] _NormalB ("NormalB", 2D) = "bump"{}
         _NormalStrengthA ("Normal Strength A", Float) = 1
         _NormalStrengthB ("Normal Strength B", Float) = 1
+        _ScrollSpeedA ("NormalA scroll speed", Range(0,10)) = 1
+        _ScrollSpeedB ("NormalB scroll speed", Range(0,10)) = 1
         _Smoothness ("Smoothness", Range(0,1)) = 0.5
         [Header(Triplanar)][Space]
         _TriplanarScale ("Tri-planar Scale", Range(0,10)) = 1
@@ -20,7 +22,9 @@ Shader "Spectral/Ocean"
         Tags
         {
             "Queue"="Transparent" "RenderType"="Transparent"
-        } ZWrite On Blend SrcAlpha OneMinusSrcAlpha
+        }
+        ZWrite Off
+        Blend SrcAlpha OneMinusSrcAlpha
 
         Pass
         {
@@ -31,16 +35,18 @@ Shader "Spectral/Ocean"
             HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag
-            #include "Lighting.hlsl"
-            #include "SpectralCore.hlsl"
-            #include "SpectralTransforms.hlsl"
-            #include "Triplanar.hlsl"
+            #include "Includes/Lighting.hlsl"
+            #include "Includes/SpectralCore.hlsl"
+            #include "Includes/SpectralTransforms.hlsl"
+            #include "Includes/Triplanar.hlsl"
             TEXTURE2D(_CameraDepth);
             SAMPLER(sampler_CameraDepth);
 
             CBUFFER_START(UnityPerMaterial)
                 real4 _ShallowColor;
                 real4 _DeepColor;
+                real _ScrollSpeedA;
+                real _ScrollSpeedB;
                 real _MaxDepth;
                 real _TriplanarScale;
                 real _TriplanarBlendSharpness;
@@ -87,8 +93,8 @@ Shader "Spectral/Ocean"
             {
                 real3 normWS = normalize(IN.normWS);
 
-                real3 nA = TriplanarNormalMap(IN.posWS, normWS, _NormalA, _NormalStrengthA, _TriplanarScale, _TriplanarBlendSharpness, _Time.x, 1);
-                real3 nB = TriplanarNormalMap(IN.posWS, normWS, _NormalB, _NormalStrengthB, _TriplanarScale, _TriplanarBlendSharpness, -_Time.x, 1);;
+                real3 nA = TriplanarNormalMap(IN.posWS, normWS, _NormalA, _NormalStrengthA, _TriplanarScale, _TriplanarBlendSharpness, _Time.x * _ScrollSpeedA, 1);
+                real3 nB = TriplanarNormalMap(IN.posWS, normWS, _NormalB, _NormalStrengthB, _TriplanarScale, _TriplanarBlendSharpness, -_Time.x * _ScrollSpeedB, 1);;
                 // merge normal textures
                 real3 normTS = normalize(nA + nB);
 
@@ -125,7 +131,7 @@ Shader "Spectral/Ocean"
                     info.lightData = _LightData[i];
                     info.lightCol = _LightColors[i];
                     info.reflectionCol = reflectionCol;
-                    albedo += LightContribution(info, .1);;
+                    albedo += LightContribution(info, 0.2);
                 }
 
                 for (int id2 = 4; id2 < min(unity_LightData.y, 8); id2++)

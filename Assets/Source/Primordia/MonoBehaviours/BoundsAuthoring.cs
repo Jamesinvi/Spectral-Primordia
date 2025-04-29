@@ -1,7 +1,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace Primordia.Primordia.MonoBehaviours
+namespace Primordia.MonoBehaviours
 {
     public class BoundsAuthoring : MonoBehaviour
     {
@@ -21,7 +21,8 @@ namespace Primordia.Primordia.MonoBehaviours
 
         private void OnDrawGizmos()
         {
-            Gizmos.DrawWireCube(transform.position + bounds.center, bounds.size);
+            Gizmos.matrix = transform.localToWorldMatrix;
+            Gizmos.DrawWireCube(bounds.center, bounds.size);
         }
 #endif
     }

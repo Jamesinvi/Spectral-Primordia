@@ -22,8 +22,8 @@ Shader "Spectral/OpaqueUnlit"
             HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag
-            #include "SpectralCore.hlsl"
-            #include "SpectralTransforms.hlsl"
+            #include "../Includes/SpectralCore.hlsl"
+            #include "../Includes/SpectralTransforms.hlsl"
 
             CBUFFER_START(UnityPerMaterial)
                 real4 _Color;
@@ -70,7 +70,7 @@ Shader "Spectral/OpaqueUnlit"
             ZWrite On
             ColorMask R
             HLSLPROGRAM
-            #include "SpectralDepth.hlsl"
+            #include "../Includes/SpectralDepth.hlsl"
             #pragma vertex DepthOnlyVert
             #pragma fragment DepthOnlyFrag
             ENDHLSL

@@ -1,9 +1,9 @@
 using System;
+using Primordia.Components;
 using Primordia.Core;
-using Primordia.Primordia.Components;
-using Primordia.Primordia.Managers;
+using Primordia.Managers;
 
-namespace Primordia.Primordia.Systems
+namespace Primordia.Systems
 {
     public class MoveEntitySystem : EntitySystem
     {

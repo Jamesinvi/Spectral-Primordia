@@ -26,9 +26,9 @@ Shader
             HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag
-            #include "SpectralCore.hlsl"
-            #include "SpectralTransforms.hlsl"
-            #include "Lighting.hlsl"
+            #include "../Includes/SpectralCore.hlsl"
+            #include "../Includes/SpectralTransforms.hlsl"
+            #include "../Includes/Lighting.hlsl"
             #pragma multi_compile __ NORMAL_ON
 
             CBUFFER_START(UnityPerMaterial)
@@ -140,7 +140,7 @@ Shader
             }
             ZWrite On
             HLSLPROGRAM
-            #include "SpectralDepth.hlsl"
+            #include "../Includes/SpectralDepth.hlsl"
             #pragma vertex DepthOnlyVert
             #pragma fragment DepthOnlyFrag
             ENDHLSL

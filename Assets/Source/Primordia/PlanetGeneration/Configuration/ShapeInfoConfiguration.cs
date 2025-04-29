@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Primordia.Primordia.PlanetGeneration.Configuration
+namespace Primordia.PlanetGeneration.Configuration
 {
     [CreateAssetMenu(menuName = "Autonation/Planet Generation/Configuration")]
     public class ShapeInfoConfiguration : ScriptableObject

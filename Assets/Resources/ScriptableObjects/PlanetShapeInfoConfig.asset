@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 25db6506f03b408bbefc69560d2ac47b, type: 3}
   m_Name: PlanetShapeInfoConfig
   m_EditorClassIdentifier: 
-  resolution: 3
+  resolution: 4
   radius: 35
   noiseSettings:
     octaves: 8

@@ -1,11 +1,11 @@
 using System;
 using Primordia.Core;
-using Primordia.Primordia.Managers;
-using Primordia.Primordia.MonoBehaviours;
+using Primordia.Managers;
+using Primordia.MonoBehaviours;
 using Unity.Properties;
 using UnityEngine.UIElements;
 
-namespace Primordia.Primordia.UI
+namespace Primordia.UI
 {
     public class UIManager : SingletonBehaviour<UIManager>, IDataSourceViewHashProvider
     {

@@ -1,10 +1,10 @@
 using System;
-using Primordia.Primordia.PlanetGeneration.Configuration;
+using Primordia.PlanetGeneration.Configuration;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Rendering;
 
-namespace Primordia.Primordia.PlanetGeneration
+namespace Primordia.PlanetGeneration
 {
     [Serializable]
     [GenerateHLSL(PackingRules.Exact, false, sourcePath: "Assets/Shaders/Compute/NoiseSettings")]

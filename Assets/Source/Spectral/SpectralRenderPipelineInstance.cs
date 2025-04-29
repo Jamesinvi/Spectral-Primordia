@@ -26,11 +26,6 @@ namespace Spectral
             _shadowResolution = ((int)asset.shadowResolution + 1) * 512;
         }
 
-        protected override void Render(ScriptableRenderContext context, Camera[] cameras)
-        {
-            throw new NotImplementedException();
-        }
-
         protected override void Render(ScriptableRenderContext context, List<Camera> cameras)
         {
             BeginContextRendering(context, cameras);

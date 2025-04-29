@@ -1,9 +1,9 @@
 using System;
+using Primordia.Components;
 using Primordia.Core;
-using Primordia.Primordia.Components;
 using UnityEngine;
 
-namespace Primordia.Primordia.Managers
+namespace Primordia.Managers
 {
     public class EntityDatabase : Singleton<EntityDatabase>
     {

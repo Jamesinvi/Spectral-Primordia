@@ -13,5 +13,16 @@ namespace Spectral
             GraphicsSettings.useScriptableRenderPipelineBatching = true;
             return new SpectralRenderPipelineInstance(this);
         }
+
+#if UNITY_EDITOR
+        //==================== Default Materials =======================
+
+        private const string MaterialDefaultsPath = "Assets/Materials/SpectralDefaultMaterials/";
+        public override Material defaultMaterial => UnityEditor.AssetDatabase.LoadAssetAtPath<Material>(MaterialDefaultsPath + "LitOpaque.mat");
+
+        //==================== Default Shaders =======================
+
+        public override Shader defaultShader => Shader.Find("Spectral/OpaqueLit");
     }
+#endif
 }

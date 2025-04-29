@@ -4,7 +4,7 @@ using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Rendering;
 
-namespace Primordia.Primordia.PlanetGeneration
+namespace Primordia.PlanetGeneration
 {
     [BurstCompile]
     public static class SphereGenerator
@@ -58,8 +58,8 @@ namespace Primordia.Primordia.PlanetGeneration
             mesh.indexFormat = vertices.Length > 65535
                 ? IndexFormat.UInt32
                 : IndexFormat.UInt16;
-            mesh.SetVertices(vertices);
-            mesh.SetIndices(indices, MeshTopology.Triangles, 0);
+            mesh.SetVertices(vertices, 0,vertexCount, MeshUpdateFlags.DontRecalculateBounds);
+            mesh.SetIndices(indices, MeshTopology.Triangles, 0, calculateBounds: false);
             mesh.SetUVs(0, uvs);
             mesh.SetUVs(1, uvs2);
             mesh.RecalculateBounds();

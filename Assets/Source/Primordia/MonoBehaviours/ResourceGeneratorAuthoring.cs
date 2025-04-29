@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Primordia.Primordia.MonoBehaviours
+namespace Primordia.MonoBehaviours
 {
     public class ResourceGeneratorAuthoring : MonoBehaviour
     {

@@ -2,7 +2,7 @@ using Primordia.Core;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace Primordia.Primordia.MonoBehaviours
+namespace Primordia.MonoBehaviours
 {
     [RequireComponent(typeof(CameraController))]
     public class Player : SingletonBehaviour<Player>
@@ -21,6 +21,7 @@ namespace Primordia.Primordia.MonoBehaviours
         private InputAction _leftClickAction;
         private Camera _mainCamera;
         private InputAction _rightClickAction;
+        private GameObject _entityToSpawn;
 
         private void Start()
         {
@@ -30,6 +31,8 @@ namespace Primordia.Primordia.MonoBehaviours
             _cameraController = GetComponent<CameraController>();
             _layerMask = LayerMask.GetMask("Surface");
             _layerMask2 = LayerMask.GetMask("Selection");
+            _entityToSpawn = Resources.Load<GameObject>("Prefabs/ENTT TestCube");
+
         }
 
         private void Update()
@@ -43,7 +46,8 @@ namespace Primordia.Primordia.MonoBehaviours
                         _cameraController.SetFocusedObject(_hit.collider.transform);
                         return;
                     case State.Building when Physics.Raycast(ray, out _hit, Mathf.Infinity, _layerMask.value):
-                        SetState(State.Selection);
+                        Instantiate(_entityToSpawn, _hit.point, Quaternion.LookRotation(-_hit.normal));
+                        ExitBuildMode();
                         return;
                 }
 

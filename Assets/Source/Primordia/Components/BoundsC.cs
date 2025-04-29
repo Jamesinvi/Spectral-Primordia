@@ -1,7 +1,7 @@
 using UnityEngine;
 using Core_Component = Primordia.Core.Component;
 
-namespace Primordia.Primordia.Components
+namespace Primordia.Components
 {
     public record BoundsC : Core_Component
     {

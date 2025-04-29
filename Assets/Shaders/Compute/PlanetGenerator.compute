@@ -2,7 +2,7 @@
 
 #include "ShapeInfo.hlsl"
 #include "NoiseSettings.hlsl"
-#include "../Noise.cginc"
+#include "../Includes/Noise.cginc"
 RWStructuredBuffer<float3> vertices;
 RWStructuredBuffer<int> indices;
 RWStructuredBuffer<float2> uvs;

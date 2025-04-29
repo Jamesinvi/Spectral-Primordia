@@ -1,6 +1,6 @@
 using Primordia.Core;
 
-namespace Primordia.Primordia.Managers
+namespace Primordia.Managers
 {
     public class ResourcesManager : SingletonBehaviour<ResourcesManager>
     {

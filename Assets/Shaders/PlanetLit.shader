@@ -39,10 +39,10 @@ Shader "Spectral/PlanetLit"
             HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag
-            #include "SpectralCore.hlsl"
-            #include "SpectralTransforms.hlsl"
-            #include "Lighting.hlsl"
-            #include "Triplanar.hlsl"
+            #include "Includes/SpectralCore.hlsl"
+            #include "Includes/SpectralTransforms.hlsl"
+            #include "Includes/Lighting.hlsl"
+            #include "Includes/Triplanar.hlsl"
 
             TEXTURE2D_ARRAY(_HeightTex);
             SAMPLER(sampler_HeightTex);
@@ -193,7 +193,7 @@ Shader "Spectral/PlanetLit"
             }
             ZWrite On
             HLSLPROGRAM
-            #include "SpectralDepth.hlsl"
+            #include "Includes/SpectralDepth.hlsl"
             #pragma vertex DepthOnlyVert
             #pragma fragment DepthOnlyFrag
             ENDHLSL

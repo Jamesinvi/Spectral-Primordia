@@ -1,8 +1,8 @@
 using System;
 using Primordia.Core;
-using Primordia.Primordia.Managers;
+using Primordia.Managers;
 
-namespace Primordia.Primordia.Systems
+namespace Primordia.Systems
 {
     public class GenerateResourcesSystem : EntitySystem
     {

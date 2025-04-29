@@ -1,10 +1,10 @@
 using System;
+using Primordia.Components;
 using Primordia.Core;
-using Primordia.Primordia.Components;
-using Primordia.Primordia.Managers;
+using Primordia.Managers;
 using UnityEngine;
 
-namespace Primordia.Primordia.MonoBehaviours
+namespace Primordia.MonoBehaviours
 {
     public class ConvertToEntity : MonoBehaviour
     {

@@ -1,5 +1,5 @@
 using System;
-using Primordia.Primordia.Managers;
+using Primordia.Managers;
 using UnityEngine;
 using Object = UnityEngine.Object;
 

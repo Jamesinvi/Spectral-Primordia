@@ -1,6 +1,6 @@
 using Primordia.Core;
 
-namespace Primordia.Primordia.Components
+namespace Primordia.Components
 {
     public record GenerateResourceC : Component
     {

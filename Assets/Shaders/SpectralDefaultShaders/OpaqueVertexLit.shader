@@ -22,9 +22,9 @@ Shader
             HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag
-            #include "SpectralCore.hlsl"
-            #include "SpectralTransforms.hlsl"
-            #include "Lighting.hlsl"
+            #include "../Includes/SpectralCore.hlsl"
+            #include "../Includes/SpectralTransforms.hlsl"
+            #include "../Includes/Lighting.hlsl"
 
             CBUFFER_START(UnityPerMaterial)
                 real4 _Color;
@@ -118,7 +118,7 @@ Shader
             ZWrite On
             ColorMask R
             HLSLPROGRAM
-            #include "SpectralDepth.hlsl"
+            #include "../Includes/SpectralDepth.hlsl"
             #pragma vertex DepthOnlyVert
             #pragma fragment DepthOnlyFrag
             ENDHLSL

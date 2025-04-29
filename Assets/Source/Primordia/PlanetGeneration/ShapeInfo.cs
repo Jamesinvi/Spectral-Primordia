@@ -1,7 +1,7 @@
-using Primordia.Primordia.PlanetGeneration.Configuration;
+using Primordia.PlanetGeneration.Configuration;
 using UnityEngine.Rendering;
 
-namespace Primordia.Primordia.PlanetGeneration
+namespace Primordia.PlanetGeneration
 {
     [GenerateHLSL(PackingRules.Exact, false, sourcePath: "Assets/Shaders/Compute/ShapeInfo")]
     public struct ShapeInfo

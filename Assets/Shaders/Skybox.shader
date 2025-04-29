@@ -26,8 +26,8 @@ Shader "Spectral/Skybox"
             #pragma fragment frag
             // make fog work
             #pragma multi_compile_fog
-            #include "SpectralCore.hlsl"
-            #include "SpectralTransforms.hlsl"
+            #include "Includes/SpectralCore.hlsl"
+            #include "Includes/SpectralTransforms.hlsl"
             #define MAXLIGHTCOUNT 16
 
             CBUFFER_START(Lights)

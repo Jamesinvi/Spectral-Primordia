@@ -2,7 +2,7 @@ using Primordia.Core;
 using UnityEngine;
 using Core_Component = Primordia.Core.Component;
 
-namespace Primordia.Primordia.Components
+namespace Primordia.Components
 {
     public record TransformC : Core_Component
     {

@@ -1,12 +1,12 @@
 using System;
-using Primordia.Primordia.PlanetGeneration.Configuration;
+using Primordia.PlanetGeneration.Configuration;
 using Sirenix.OdinInspector;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Experimental.Rendering;
 using UnityEngine.Pool;
 
-namespace Primordia.Primordia.PlanetGeneration
+namespace Primordia.PlanetGeneration
 {
     public class PlanetMeshGenerator : MonoBehaviour
     {
@@ -20,6 +20,7 @@ namespace Primordia.Primordia.PlanetGeneration
 
         [SerializeField] private MeshFilter[] _meshFilters = new MeshFilter[6];
         [SerializeField] private MeshRenderer[] _meshRenderers = new MeshRenderer[6];
+        [SerializeField] private MeshCollider[] _colliders = new MeshCollider[6];
         public ComputeShader computeShader;
 
         private void OnDrawGizmosSelected()
@@ -72,8 +73,9 @@ namespace Primordia.Primordia.PlanetGeneration
                 textures[i].enableRandomWrite = true;
                 if (_meshFilters[i] == null)
                 {
-                    var child = new GameObject("Face " + i, typeof(MeshFilter), typeof(MeshRenderer));
+                    var child = new GameObject("Face " + i, typeof(MeshFilter), typeof(MeshRenderer), typeof(MeshCollider));
                     child.transform.SetParent(transform);
+                    child.layer = gameObject.layer;
                     _meshFilters[i] = child.GetComponent<MeshFilter>();
                     _meshFilters[i].sharedMesh = new Mesh
                     {
@@ -81,6 +83,7 @@ namespace Primordia.Primordia.PlanetGeneration
                     };
                     _meshRenderers[i] = child.GetComponent<MeshRenderer>();
                     _meshRenderers[i].sharedMaterial = material;
+                    _colliders[i] = child.GetComponent<MeshCollider>();
                 }
 
                 SphereGenerator.GenerateCubeSphereFace(_meshFilters[i].sharedMesh, i, normals[i], textures[i], new ShapeInfo(shapeInfoConfiguration), new NoiseSettings(shapeInfoConfiguration), computeShader);

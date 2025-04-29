@@ -1,15 +1,16 @@
 using Primordia.Core;
 using Primordia.Core.Math;
-using Primordia.Primordia.Managers;
+using Primordia.Managers;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace Primordia.Primordia.MonoBehaviours
+namespace Primordia.MonoBehaviours
 {
     [RequireComponent(typeof(Camera))]
     public class CameraController : MonoBehaviour
     {
         [SerializeField] public float _orbitSpeed = 3f;
+        [SerializeField] [Range(0,1)] public float _orbitSmoothTime = 1f;
         [SerializeField] public float _zoomSpeed = 3f;
         [SerializeField] public float _zoomDistance = 3f;
         [SerializeField] public float _minZoomDistance = 1f;
@@ -26,6 +27,8 @@ namespace Primordia.Primordia.MonoBehaviours
         private InputAction _rightClickAction;
         private float _yaw;
         private InputAction _zoomAction;
+        private Vector2 _virtualMousePosition;
+
 
         private void Awake()
         {
@@ -49,7 +52,19 @@ namespace Primordia.Primordia.MonoBehaviours
                 _pitch -= delta.y * _orbitSpeed;
                 // Clamp pitch so you can't flip upside‑down
                 _pitch = Mathf.Clamp(_pitch, -89, 89);
+                Cursor.lockState = CursorLockMode.Locked;
             }
+            else
+            {
+                // Just exited rotation movement, reset the cursor to the last saved position
+                if (_rightClickAction.WasReleasedThisFrame())
+                {
+                    Mouse.current.WarpCursorPosition(_virtualMousePosition);
+                }
+                Cursor.lockState = CursorLockMode.None;
+                _virtualMousePosition = Pointer.current.position.ReadValue();
+            }
+
 
             var zoomDelta = _zoomAction.ReadValue<Vector2>();
             _zoomDistance -= zoomDelta.y * _zoomSpeed * Time.deltaTime;
@@ -61,7 +76,8 @@ namespace Primordia.Primordia.MonoBehaviours
             Quaternion rot = Quaternion.Euler(_pitch, _yaw, 0f);
             Vector3 offset = rot * Vector3.back * _zoomDistance;
             Vector3 targetPosition = _focusedPosition + offset;
-            transform.position = Vector3.Slerp(transform.position, targetPosition, Vector3.Distance(transform.position, targetPosition) / Time.deltaTime);
+            
+            transform.position = Vector3.Slerp(transform.position, targetPosition, _orbitSmoothTime);
             transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(_focusedObject.transform.position - transform.position), _orbitSpeed);
         }
 

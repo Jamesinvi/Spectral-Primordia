@@ -1,9 +1,9 @@
 using Primordia.Core;
-using Primordia.Primordia.Managers;
+using Primordia.Managers;
 using UnityEngine;
 using Core_Component = Primordia.Core.Component;
 
-namespace Primordia.Primordia.Components
+namespace Primordia.Components
 {
     public record RendererC : Core_Component
     {

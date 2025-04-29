@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using Primordia.Core;
-using Primordia.Primordia.Systems;
+using Primordia.Systems;
 using UnityEngine;
 
-namespace Primordia.Primordia.Managers
+namespace Primordia.Managers
 {
     public class GameManager : SingletonBehaviour<GameManager>
     {
