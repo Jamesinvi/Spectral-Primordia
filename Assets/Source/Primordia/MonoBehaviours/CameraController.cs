@@ -78,7 +78,11 @@ namespace Primordia.MonoBehaviours
             Vector3 targetPosition = _focusedPosition + offset;
             
             transform.position = Vector3.Slerp(transform.position, targetPosition, _orbitSmoothTime);
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(_focusedObject.transform.position - transform.position), _orbitSpeed);
+            //TODO: Handle when focusedObject gets destroyed
+            if (_focusedObject != null)
+            {
+                transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(_focusedObject.transform.position - transform.position), _orbitSpeed);
+            }
         }
 
         public void SetFocusedObject(Transform focusedObject)
